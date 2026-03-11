@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Hotel Admin</title>
+
+	<link rel="stylesheet"
+		  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+	<link rel="stylesheet"
+		  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+	<style>
+
+		body {
+			background: #f4f6f9;
+		}
+
+		/* TOP NAVBAR */
+
+		.navbar {
+			background: #1f2d3d;
+		}
+
+			.navbar a {
+				color: white !important;
+			}
+
+		/* CARD */
+
+		.card {
+			border: none;
+			border-radius: 10px;
+			box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+			transition: 0.3s;
+		}
+
+			.card:hover {
+				transform: translateY(-5px);
+			}
+
+		.container-main {
+			padding: 30px;
+		}
+
+	</style>
+
+</head>
+
+<body>
+
+	<nav class="navbar navbar-expand-lg">
+
+		<div class="container-fluid">
+
+			<a class="navbar-brand text-white" href="/Admin/Dashboard">
+				🏨 Hotel Admin
+			</a>
+
+			<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="menu">
+
+				<ul class="navbar-nav ms-auto">
+
+					<li class="nav-item">
+						<a class="nav-link" href="/Admin/Dashboard">
+							<i class="bi bi-speedometer2"></i> Dashboard
+						</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" href="/Admin/ManageHotels">
+							<i class="bi bi-building"></i> Hotels
+						</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" href="/Admin/ManageRooms">
+							<i class="bi bi-door-open"></i> Rooms
+						</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link" href="/Admin/ManageBookings">
+							<i class="bi bi-calendar-check"></i> Bookings
+						</a>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+	</nav>
+
+	<div class="container-main">
+
+		@RenderBody()
+
+	</div>
+
+</body>
+</html>
