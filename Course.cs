@@ -8,3 +8,5 @@ public class Course
     // Username of the instructor responsible for this course (e.g. "lecturer1")
     public string Instructor { get; set; }
 }
+
+Delete Course.cs file
