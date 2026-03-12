@@ -369,11 +369,23 @@
 
 <style>
 
+    /* Color Variables */
+    :root {
+        --light-beige: #F5F1ED;
+        --gold-accent: #C6A96D;
+     --gold-dark: #A68B5B;
+  }
+
+    /* Apply Light Beige background to entire page */
+    body {
+        background-color: var(--light-beige);
+    }
+
     .hero-section {
         position: relative;
-        height: 550px;
-        background-size: cover;
-        background-position: center;
+  height: 550px;
+ background-size: cover;
+   background-position: center;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -381,16 +393,16 @@
 
     .hero-overlay {
         position: absolute;
-        top: 0;
+ top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+  width: 100%;
+    height: 100%;
         background: rgba(0,0,0,0.45);
     }
 
     .hero-content {
-        position: relative;
-        z-index: 2;
+    position: relative;
+    z-index: 2;
     }
 
     .search-box {
@@ -398,60 +410,54 @@
         margin: auto;
     }
 
-        .search-box select,
+  .search-box select,
         .search-box input {
-            height: 45px;
-        }
+          height: 45px;
+   }
 
     /* Animation */
 
     .animate-title {
-        animation: fadeDown 1s ease;
+    animation: fadeDown 1s ease;
     }
 
     .animate-subtitle {
-        animation: fadeDown 1.5s ease;
+     animation: fadeDown 1.5s ease;
     }
 
     .animate-search {
-        animation: fadeUp 1.5s ease;
+     animation: fadeUp 1.5s ease;
     }
 
     /* Keyframes */
 
     @@keyframes fadeDown {
-        from
-
-    {
-        opacity: 0;
+   from {
+       opacity: 0;
         transform: translateY(-30px);
-    }
+        }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
+   to {
+            opacity: 1;
+         transform: translateY(0);
+        }
     }
 
     @@keyframes fadeUp {
-        from
+   from {
+            opacity: 0;
+       transform: translateY(40px);
+        }
 
-    {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
+        to {
+       opacity: 1;
+         transform: translateY(0);
+        }
     }
 
     .hero-section {
         position: relative;
-        height: 550px;
+  height: 550px;
         overflow: hidden;
     }
 
@@ -460,8 +466,8 @@
         width: 100%;
         height: 100%;
         background-size: cover;
-        background-position: center;
-        transition: opacity 1.5s ease-in-out;
+      background-position: center;
+     transition: opacity 1.5s ease-in-out;
     }
 
     .hero-bg1 {
@@ -474,85 +480,130 @@
     }
 
     .hero-overlay {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.45);
-        z-index: 3;
-    }
+      position: absolute;
+     width: 100%;
+   height: 100%;
+     background: rgba(0,0,0,0.45);
+    z-index: 3;
+ }
 
     .hero-content {
         position: relative;
-        z-index: 4;
+  z-index: 4;
     }
 
-    .search-box {
+  .search-box {
         max-width: 850px;
-        margin: auto;
+margin: auto;
     }
 
     .room-card {
-        padding: 15px;
-        border-radius: 10px;
+  padding: 15px;
+   border-radius: 10px;
         transition: all 0.3s ease;
         cursor: pointer;
     }
 
         .room-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
-    .why-card {
-        background: #000;
-        color: white;
-        padding: 30px;
+  .why-card {
+        background: linear-gradient(135deg, var(--gold-accent) 0%, var(--gold-dark) 100%);
+color: white;
+      padding: 30px;
         border-radius: 10px;
         height: 100%;
+        transition: all 0.3s ease;
     }
 
-        .why-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+ .why-card:hover {
+    transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(198, 169, 109, 0.3);
         }
 
     .service-card {
         border-radius: 12px;
         background: white;
         transition: all 0.3s ease;
+      border-left: 4px solid var(--gold-accent);
     }
 
         .service-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+
+        .service-card h4 {
+         color: var(--gold-accent);
+   margin-top: 10px;
+            font-weight: 600;
         }
 
     /* Soft section */
 
     .section-soft {
-        background: #f8f9fb;
+        background: var(--light-beige);
     }
 
     /* Light section */
 
     .section-light {
-        background: #eef2f7;
+    background: linear-gradient(135deg, #FFFBF7 0%, var(--light-beige) 100%);
     }
 
     .card {
         border: none;
         border-radius: 12px;
         transition: all 0.3s ease;
+        border-top: 3px solid var(--gold-accent);
     }
 
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(198, 169, 109, 0.2);
         }
 
     .card-img-top {
         height: 220px;
-        object-fit: cover;
+      object-fit: cover;
+    }
+
+    /* Gold text color for accents */
+    .card-title {
+        color: var(--gold-accent);
+    font-weight: 600;
+    }
+
+    .fw-bold.text-primary {
+        color: var(--gold-accent) !important;
+    }
+
+    /* Button styling */
+    .btn-outline-primary {
+        color: var(--gold-accent);
+        border-color: var(--gold-accent);
+    }
+
+.btn-outline-primary:hover {
+        background-color: var(--gold-accent);
+        border-color: var(--gold-accent);
+    }
+
+    .btn-primary {
+        background-color: var(--gold-accent);
+        border-color: var(--gold-accent);
+    }
+
+    .btn-primary:hover {
+ background-color: var(--gold-dark);
+        border-color: var(--gold-dark);
+  }
+
+    h2 {
+ color: var(--gold-accent);
+        font-weight: 700;
     }
 
 </style>
