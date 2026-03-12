@@ -1,41 +1,130 @@
 ﻿@page
+@model HotelManagement.Pages.Admin.ManageHotelsModel
+@{
+    Layout = "_AdminLayout";
+}
 
-<h1>Manage Hotels</h1>
+<div class="container-fluid">
 
-<button class="btn btn-primary mb-3">Add Hotel</button>
+    <h2 class="mb-4">Manage Hotels</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Dashboard</li>
+            <li class="breadcrumb-item">Hotels</li>
+            <li class="breadcrumb-item active">Manage Hotels</li>
+        </ol>
+    </nav>
 
-<table class="table table-bordered">
+    <!-- Search + Add -->
+    <div class="row mb-3">
 
-    <thead>
+        <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Search hotel...">
+        </div>
 
-        <tr>
-            <th>Image</th>
-            <th>Hotel Name</th>
-            <th>City</th>
-            <th>Price</th>
-            <th>Action</th>
-        </tr>
+        <div class="col-md-6 text-end">
+            <a href="/Admin/AddHotel" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Hotel
+            </a>
+        </div>
 
-    </thead>
+    </div>
 
-    <tbody>
+    <!-- Hotel Table -->
+    <div class="card">
 
-        <tr>
-            <td>
-                <img src="/images/hotel1.jpg" width="80">
-            </td>
+        <div class="card-body table-responsive">
 
-            <td>Hilton</td>
-            <td>New York</td>
-            <td>$200</td>
+            <table class="table table-bordered table-striped">
 
-            <td>
-                <button class="btn btn-warning">Edit</button>
-                <button class="btn btn-danger">Delete</button>
-            </td>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Hotel Name</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th style="width:150px;">Actions</th>
+                    </tr>
+                </thead>
 
-        </tr>
+                <tbody>
 
-    </tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Hilton</td>
+                        <td>London</td>
+                        <td>Luxury hotel</td>
+                        <td>
 
-</table>
+                            <button class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this hotel?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>2</td>
+                        <td>Marriott</td>
+                        <td>Paris</td>
+                        <td>Business hotel</td>
+                        <td>
+
+                            <button class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this hotel?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>3</td>
+                        <td>Sheraton</td>
+                        <td>Tokyo</td>
+                        <td>Premium hotel</td>
+                        <td>
+
+                            <button class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this hotel?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-end mt-3">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

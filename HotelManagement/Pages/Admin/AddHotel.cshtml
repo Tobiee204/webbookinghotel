@@ -1,0 +1,54 @@
+﻿@page
+@model HotelManagement.Pages.Admin.AddHotelModel
+@{
+	Layout = "_AdminLayout";
+}
+
+<div class="card">
+
+	<div class="card-header">
+		<h3 class="card-title">Add Hotel</h3>
+	</div>
+
+	<div class="card-body">
+
+		<form>
+
+			<div class="form-group">
+				<label>Hotel Name</label>
+				<input class="form-control">
+			</div>
+
+			<div class="form-group">
+				<label>Location</label>
+				<input class="form-control">
+			</div>
+
+			<div class="form-group">
+				<label>Description</label>
+				<textarea class="form-control"></textarea>
+			</div>
+
+			<div class="form-group">
+				<label>Upload Image</label>
+				<input type="file" class="form-control" id="imageUpload">
+			</div>
+
+			<img id="previewImage" width="200" style="margin-top:10px;" />
+
+			<button class="btn btn-success">Save Hotel</button>
+
+		</form>
+
+	</div>
+
+</div>
+
+<script>
+	document.getElementById("imageUpload").onchange = function (evt) {
+		const [file] = this.files
+		if (file) {
+			document.getElementById("previewImage").src = URL.createObjectURL(file)
+		}
+	}
+</script>

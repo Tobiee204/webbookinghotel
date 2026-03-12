@@ -1,0 +1,50 @@
+﻿@page
+@model HotelManagement.Pages.Admin.AddRoomModel
+@{
+	Layout = "_AdminLayout";
+}
+
+<div class="card">
+
+	<div class="card-header">
+		<h3 class="card-title">Add Room</h3>
+	</div>
+
+	<div class="card-body">
+
+		<form>
+
+			<div class="form-group">
+				<label>Hotel</label>
+				<select class="form-control">
+					<option>Hilton</option>
+					<option>Marriott</option>
+					<option>Sheraton</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>Room Type</label>
+				<input class="form-control">
+			</div>
+
+			<div class="form-group">
+				<label>Price</label>
+				<input class="form-control">
+			</div>
+
+			<div class="form-group">
+				<label>Status</label>
+				<select class="form-control">
+					<option>Available</option>
+					<option>Booked</option>
+					<option>Maintenance</option>
+				</select>
+			</div>
+
+			<button class="btn btn-primary">Add Room</button>
+
+		</form>
+
+	</div>
+</div>

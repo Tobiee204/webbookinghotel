@@ -1,51 +1,161 @@
 ﻿@page
+@model HotelManagement.Pages.Admin.DashboardModel
+@{
+    Layout = "_AdminLayout";
+}
 
-<h2 class="mb-4">Dashboard</h2>
+<div class="container-fluid">
 
-<div class="row g-4">
+    <!-- STATISTICS -->
+    <div class="row">
 
-	<div class="col-md-3">
+        <div class="col-lg-3 col-md-6 col-12">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>25</h3>
+                    <p>Hotels</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-hotel"></i>
+                </div>
+            </div>
+        </div>
 
-		<div class="card bg-primary text-white p-4">
+        <div class="col-lg-3 col-md-6 col-12">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>120</h3>
+                    <p>Rooms</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+            </div>
+        </div>
 
-			<h6>Total Hotels</h6>
-			<h2>12</h2>
+        <div class="col-lg-3 col-md-6 col-12">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>320</h3>
+                    <p>Bookings</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+            </div>
+        </div>
 
-		</div>
+        <div class="col-lg-3 col-md-6 col-12">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>80</h3>
+                    <p>Users</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
 
-	</div>
+    </div>
 
-	<div class="col-md-3">
 
-		<div class="card bg-success text-white p-4">
+    <!-- TABLE + ACTIONS -->
+    <div class="row">
 
-			<h6>Total Rooms</h6>
-			<h2>80</h2>
+        <!-- RECENT BOOKINGS -->
+        <div class="col-lg-8">
 
-		</div>
+            <div class="card">
 
-	</div>
+                <div class="card-header">
+                    <h3 class="card-title">Recent Bookings</h3>
+                </div>
 
-	<div class="col-md-3">
+                <div class="card-body table-responsive">
 
-		<div class="card bg-warning text-white p-4">
+                    <table class="table table-bordered table-striped">
 
-			<h6>Total Bookings</h6>
-			<h2>45</h2>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Hotel</th>
+                                <th>Room</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
 
-		</div>
+                        <tbody>
 
-	</div>
+                            <tr>
+                                <td>1001</td>
+                                <td>John</td>
+                                <td>Hilton</td>
+                                <td>Deluxe</td>
+                                <td><span class="badge bg-success">Confirmed</span></td>
+                            </tr>
 
-	<div class="col-md-3">
+                            <tr>
+                                <td>1002</td>
+                                <td>Anna</td>
+                                <td>Marriott</td>
+                                <td>Suite</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                            </tr>
 
-		<div class="card bg-danger text-white p-4">
+                            <tr>
+                                <td>1003</td>
+                                <td>Mike</td>
+                                <td>Sheraton</td>
+                                <td>Standard</td>
+                                <td><span class="badge bg-danger">Cancelled</span></td>
+                            </tr>
 
-			<h6>Total Users</h6>
-			<h2>150</h2>
+                        </tbody>
 
-		</div>
+                    </table>
 
-	</div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+        <div class="col-lg-4">
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h3 class="card-title">Quick Actions</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <a href="/Admin/AddHotel" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-plus"></i> Add Hotel
+                    </a>
+
+                    <a href="/Admin/AddRoom" class="btn btn-success w-100 mb-3">
+                        <i class="fas fa-bed"></i> Add Room
+                    </a>
+
+                    <a href="/Admin/ManageBookings" class="btn btn-warning w-100 mb-3">
+                        <i class="fas fa-calendar"></i> View Bookings
+                    </a>
+
+                    <a href="/Admin/ManageHotels" class="btn btn-info w-100">
+                        <i class="fas fa-hotel"></i> Manage Hotels
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
