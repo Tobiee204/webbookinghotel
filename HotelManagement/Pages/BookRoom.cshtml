@@ -1,0 +1,140 @@
+﻿@page
+@model HotelManagement.Pages.BookRoomModel
+
+<section class="container py-5">
+
+    <h2 class="text-center mb-5">Book Your Room</h2>
+
+    <div class="row">
+
+        <!-- ROOM INFO -->
+        <div class="col-md-5">
+
+            <div class="card shadow">
+
+                <img src="/images/Luxury.png" class="card-img-top">
+
+                <div class="card-body">
+
+                    <h4>Luxury Room</h4>
+
+                    <p class="text-muted">Ho Chi Minh City</p>
+
+                    <p>King-size bed • 2 Guests</p>
+
+                    <p class="text-primary fw-bold fs-5">
+                        $1.200.000 / day
+                    </p>
+
+                    <p class="text-success fw-bold">
+                        Status: Available
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BOOKING FORM -->
+        <div class="col-md-7">
+
+            <div class="card shadow p-4">
+
+                <h4 class="mb-4">Booking Information</h4>
+
+                <form>
+
+                    <div class="row g-3">
+
+                        <!-- Full Name -->
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" placeholder="Enter your name">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" placeholder="Enter email">
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-control" placeholder="Phone number">
+                        </div>
+
+                        <!-- Guests -->
+                        <div class="col-md-6">
+                            <label class="form-label">Guests</label>
+                            <select class="form-select">
+                                <option>1 Person</option>
+                                <option>2 People</option>
+                                <option>3 People</option>
+                                <option>4 People</option>
+                            </select>
+                        </div>
+
+                        <!-- Check-in -->
+                        <div class="col-md-6">
+                            <label class="form-label">Check-in Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+
+                        <!-- Check-out -->
+                        <div class="col-md-6">
+                            <label class="form-label">Check-out Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+
+                        <!-- Special Request -->
+                        <div class="col-12">
+                            <label class="form-label">Special Request</label>
+                            <textarea class="form-control" rows="3"
+                                      placeholder="Any special request?"></textarea>
+                        </div>
+
+                    </div>
+
+                    <button class="btn btn-primary mt-4 w-100 btn-lg">
+                        Confirm Booking
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<style>
+
+    .card {
+        border: none;
+        border-radius: 12px;
+    }
+
+    .card-img-top {
+        height: 260px;
+        object-fit: cover;
+    }
+
+    form input,
+    form select,
+    form textarea {
+        height: 45px;
+    }
+
+    textarea {
+        height: auto !important;
+    }
+
+    button {
+        font-size: 18px;
+    }
+
+</style>

@@ -1,0 +1,129 @@
+﻿@page
+@model HotelManagement.Pages.RegisterModel
+
+<style>
+
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .bg-slide {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .bg1 {
+        z-index: -2;
+    }
+
+    .bg2 {
+        z-index: -1;
+        opacity: 0;
+    }
+
+    .login-card,
+    .register-card {
+        width: 420px;
+        background: #f5e6d3;
+        padding: 40px;
+        border-radius: 12px;
+    }
+
+</style>
+
+<div class="bg-slide bg1"></div>
+<div class="bg-slide bg2"></div>
+
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+
+    <div class="register-card shadow-lg">
+
+        <h3 class="text-center mb-4">Create Account</h3>
+
+        <form>
+
+            <div class="mb-3">
+                <label>Full Name</label>
+                <input type="text" class="form-control" placeholder="Enter your full name">
+            </div>
+
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" class="form-control" placeholder="Enter your email">
+            </div>
+
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password" class="form-control" placeholder="Enter password">
+            </div>
+
+            <div class="mb-3">
+                <label>Phone Number</label>
+                <input type="text" class="form-control" placeholder="Enter phone number">
+            </div>
+
+            <button class="btn btn-success w-100">
+                Register
+            </button>
+
+        </form>
+
+        <div class="text-center mt-3">
+
+            <p>
+                Already have an account?
+                <a asp-page="/Login">Login</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+        const images = [
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb",
+    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa"
+    ];
+
+    let index = 0;
+
+    const bg1 = document.querySelector(".bg1");
+    const bg2 = document.querySelector(".bg2");
+
+    bg1.style.backgroundImage = "url('" + images[0] + "')";
+
+    function changeBackground(){
+
+        index++;
+
+        if(index >= images.length){
+            index = 0;
+        }
+
+        bg2.style.backgroundImage = "url('" + images[index] + "')";
+        bg2.style.opacity = 1;
+
+        setTimeout(()=>{
+
+            bg1.style.backgroundImage = bg2.style.backgroundImage;
+            bg2.style.opacity = 0;
+
+        },1500);
+    }
+
+    setInterval(changeBackground,5000);
+
+</script>

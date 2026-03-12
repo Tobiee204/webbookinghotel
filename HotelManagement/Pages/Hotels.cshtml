@@ -1,0 +1,161 @@
+﻿@page
+@{
+    var room = Request.Query["room"].ToString().ToLower();
+}
+@model HotelManagement.Pages.HotelsModel
+
+<section class="container py-5">
+
+    <h2 class="text-center mb-5">Available Rooms</h2>
+
+    <div class="row g-4">
+
+        <!-- Luxury Room -->
+        @if (string.IsNullOrEmpty(room) || "luxury room".Contains(room) || "luxury".Contains(room))
+        {
+            <div class="col-md-4">
+                <div class="card room-card shadow">
+
+                    <img src="/images/Luxury.png" class="card-img-top">
+
+                    <div class="card-body text-center">
+
+                        <h5 class="card-title">Luxury Room</h5>
+
+                        <p class="text-muted">Ho Chi Minh City</p>
+
+                        <p>
+                            King-size bed • 2 Guests
+                        </p>
+
+                        <p class="fw-bold text-primary">
+                            $1.200.000 / day
+                        </p>
+
+                        <p class="text-success fw-bold">
+                            Status: Available
+                        </p>
+
+                        <a asp-page="/HotelDetails" class="btn btn-outline-primary">
+                            View Details
+                        </a>
+
+                        <a asp-page="/BookRoom" asp-route-room="Luxury" class="btn btn-primary mt-2">
+                            Book Now
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+        <!-- Superior Room -->
+        @if (string.IsNullOrEmpty(room) || "superior room".Contains(room) || "superior".Contains(room))
+        {
+            <div class="col-md-4">
+
+                <div class="card room-card shadow">
+
+                    <img src="/images/Superior.png" class="card-img-top">
+
+                    <div class="card-body text-center">
+
+                        <h5 class="card-title">Superior Room</h5>
+
+                        <p class="text-muted">Ho Chi Minh City</p>
+
+                        <p>
+                            Queen bed • 2 Guests
+                        </p>
+
+                        <p class="fw-bold text-primary">
+                            $1.000.000 / day
+                        </p>
+
+                        <p class="text-success fw-bold">
+                            Status: Available
+                        </p>
+
+                        <a asp-page="/HotelDetails" class="btn btn-outline-primary">
+                            View Details
+                        </a>
+
+                        <a asp-page="/BookRoom" asp-route-room="Luxury" class="btn btn-primary mt-2">
+                            Book Now
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+        <!-- Standard Room -->
+        @if (string.IsNullOrEmpty(room) || "standard room".Contains(room) || "standard".Contains(room))
+        {
+            <div class="col-md-4">
+
+                <div class="card room-card shadow">
+
+                    <img src="/images/Standard.png" class="card-img-top">
+
+                    <div class="card-body text-center">
+
+                        <h5 class="card-title">Standard Room</h5>
+
+                        <p class="text-muted">Ho Chi Minh City</p>
+
+                        <p>
+                            Standard bed • 2 Guests
+                        </p>
+
+                        <p class="fw-bold text-primary">
+                            $850.000 / day
+                        </p>
+
+                        <p class="text-success fw-bold">
+                            Status: Available
+                        </p>
+
+                        <a asp-page="/HotelDetails" class="btn btn-outline-primary">
+                            View Details
+                        </a>
+
+                        <a asp-page="/BookRoom" asp-route-room="Luxury" class="btn btn-primary mt-2">
+                            Book Now
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            }
+            </div>
+
+</section>
+
+
+<style>
+
+    .room-card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+    .card-img-top {
+        height: 220px;
+        object-fit: cover;
+    }
+
+</style>

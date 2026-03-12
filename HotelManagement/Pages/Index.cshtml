@@ -1,10 +1,607 @@
 ﻿@page
 @model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+
+    <div class="hero-bg hero-bg1"></div>
+    <div class="hero-bg hero-bg2"></div>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content container text-center text-white">
+
+        <h1 class="display-4 fw-bold animate-title">
+            Find Your Perfect Hotel
+        </h1>
+
+        <p class="lead animate-subtitle">
+            Book your hotel room at the best price
+        </p>
+
+        <div class="search-box p-4 bg-white rounded shadow-lg animate-search">
+
+            <div class="row g-2">
+
+                <!-- Destination -->
+                <div class="col-md-3">
+                    <input type="text" class="form-control" placeholder="Destination">
+                </div>
+
+                <!-- Check In -->
+                <div class="col-md-2">
+                    <input type="date" class="form-control">
+                </div>
+
+                <!-- Check Out -->
+                <div class="col-md-2">
+                    <input type="date" class="form-control">
+                </div>
+
+                <!-- Guests -->
+                <div class="col-md-2">
+                    <select class="form-select">
+                        <option selected disabled hidden>Guests</option>
+                        <option>1 Person</option>
+                        <option>2 People</option>
+                        <option>3 People</option>
+                        <option>4 People (Family)</option>
+                    </select>
+                </div>
+
+                <!-- Bed Type -->
+                <div class="col-md-2">
+                    <select class="form-select">
+                        <option selected disabled hidden>Bed Type</option>
+                        <option>Single Bed</option>
+                        <option>Double Bed</option>
+                        <option>Couples Bed</option>
+                        <option>Queen Bed</option>
+                        <option>King Bed</option>
+                    </select>
+                </div>
+
+                <!-- Search Button -->
+                <div class="col-md-1">
+                    <button onclick="searchRoom()" class="btn btn-primary w-200">
+                        Search
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- POPULAR HOTELS -->
+<section class="section-soft py-5">
+
+    <h2 class="text-center mb-4">Popular Hotels</h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <img src="/images/Luxury.png" class="card-img-top">
+
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">Luxury Room</h5>
+
+                    <p class="text-muted">Ho Chi Minh City</p>
+
+                    <p class="card-text">
+                        Premium luxury room with king-size bed, elegant design, and stunning city views.
+                    </p>
+
+                    <p class="fw-bold text-primary">
+                        $1.200.000 / day
+                    </p>
+
+                    <a asp-page="/HotelDetails" class="btn btn-outline-primary">
+                        View Details
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <img src="/images/Superior.png" class="card-img-top">
+
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">Superior Room</h5>
+
+                    <p class="text-muted">Ho Chi Minh City</p>
+
+                    <p class="card-text">
+                        Spacious and modern room with a comfortable bed, city view, and premium facilities.
+                    </p>
+
+                    <p class="fw-bold text-primary">
+                        $1.000.000 / day
+                    </p>
+
+                    <a asp-page="/HotelDetails" class="btn btn-outline-primary">
+                        View Details
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <img src="/images/Standard.png" class="card-img-top">
+
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">Standard Room</h5>
+
+                    <p class="text-muted">Ho Chi Minh City</p>
+
+                    <p class="card-text">
+                        Comfortable room with basic amenities, perfect for solo travelers or short stays.
+                    </p>
+
+                    <p class="fw-bold text-primary">
+                        $850.000 / day
+                    </p>
+
+                    <a asp-page="/HotelDetails" class="btn btn-outline-primary">
+                        View Details
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Our Hotel Services -->
+<section class="section-light py-5">
+
+    <h2 class="text-center mb-5">Hotel Services & Amenities</h2>
+
+    <div class="row text-center g-4">
+
+        <!-- Swimming Pool -->
+        <div class="col-md-3">
+
+            <div class="service-card shadow-sm p-4">
+
+                <img src="/images/SwimmingPool.png" class="card-img-top">
+
+                <h4>🏊 Swimming Pool</h4>
+
+                <p>
+                    Enjoy our outdoor swimming pool with a relaxing atmosphere
+                    and beautiful city views.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Coffee Shop -->
+        <div class="col-md-3">
+
+            <div class="service-card shadow-sm p-4">
+
+                <img src="/images/CoffeShop.png" class="card-img-top">
+
+                <h4>☕ Coffee Shop</h4>
+
+                <p>
+                    Start your day with fresh coffee and delicious pastries
+                    at our cozy hotel café.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Rooftop Bar -->
+        <div class="col-md-3">
+
+            <div class="service-card shadow-sm p-4">
+                <img src="/images/RooftopBar.png" class="card-img-top">
+
+                <h4>🍸 Rooftop Bar</h4>
+
+                <p>
+                    Relax with cocktails and music while enjoying a stunning
+                    rooftop city view.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Spa & Massage -->
+        <div class="col-md-3">
+
+            <div class="service-card shadow-sm p-4">
+				<img src="/images/SpaMassage.png" class="card-img-top">
+
+                <h4>💆 Spa & Massage</h4>
+
+                <p>
+                    Rejuvenate your body and mind with our professional
+                    spa and massage services.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Customer Reviews -->
+
+<section class="section-soft py-5">
+
+    <h2 class="text-center mb-5">What Our Guests Say</h2>
+
+    <div class="row text-center">
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm p-4">
+
+                <p>
+                    "Great hotel booking experience. Everything was easy!"
+                </p>
+
+                <h6 class="mt-3">John Smith</h6>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm p-4">
+
+                <p>
+                    "Beautiful hotels and great prices."
+                </p>
+
+                <h6 class="mt-3">Emily Johnson</h6>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm p-4">
+
+                <p>
+                    "Customer support was amazing."
+                </p>
+
+                <h6 class="mt-3">Michael Lee</h6>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- SERVICES -->
+<section class="bg-light py-5">
+
+    <div class="container">
+
+        <h2 class="text-center mb-5">Why Choose Us</h2>
+
+        <div class="row text-center g-4">
+
+            <div class="col-md-4">
+                <div class="why-card">
+                    <h4>Best Price</h4>
+                    <p>We guarantee the best hotel prices.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="why-card">
+                    <h4>Easy Booking</h4>
+                    <p>Book your stay in just a few clicks.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="why-card">
+                    <h4>24/7 Support</h4>
+                    <p>Our team is always ready to help you.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SPECIAL OFFER -->
+<section class="section-light text-center py-5">
+
+    <h2>Special Offer</h2>
+
+    <p>Get up to <strong>30% discount</strong> on selected hotels</p>
+
+    <button class="btn btn-success btn-lg">
+        Explore Deals
+    </button>
+
+</section>
+
+
+
+<style>
+
+    .hero-section {
+        position: relative;
+        height: 550px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.45);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .search-box {
+        max-width: 850px;
+        margin: auto;
+    }
+
+        .search-box select,
+        .search-box input {
+            height: 45px;
+        }
+
+    /* Animation */
+
+    .animate-title {
+        animation: fadeDown 1s ease;
+    }
+
+    .animate-subtitle {
+        animation: fadeDown 1.5s ease;
+    }
+
+    .animate-search {
+        animation: fadeUp 1.5s ease;
+    }
+
+    /* Keyframes */
+
+    @@keyframes fadeDown {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    @@keyframes fadeUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .hero-section {
+        position: relative;
+        height: 550px;
+        overflow: hidden;
+    }
+
+    .hero-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .hero-bg1 {
+        z-index: 1;
+    }
+
+    .hero-bg2 {
+        z-index: 2;
+        opacity: 0;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.45);
+        z-index: 3;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 4;
+    }
+
+    .search-box {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    .room-card {
+        padding: 15px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+    .why-card {
+        background: #000;
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        height: 100%;
+    }
+
+        .why-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+    .service-card {
+        border-radius: 12px;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+    /* Soft section */
+
+    .section-soft {
+        background: #f8f9fb;
+    }
+
+    /* Light section */
+
+    .section-light {
+        background: #eef2f7;
+    }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+    .card-img-top {
+        height: 220px;
+        object-fit: cover;
+    }
+
+</style>
+
+<script>
+
+       const images = [
+    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa",
+    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb"
+    ];
+
+    let index = 0;
+
+    const bg1 = document.querySelector(".hero-bg1");
+    const bg2 = document.querySelector(".hero-bg2");
+
+    bg1.style.backgroundImage = "url('" + images[0] + "')";
+
+    function changeHero(){
+
+        index++;
+
+        if(index >= images.length){
+            index = 0;
+        }
+
+        bg2.style.backgroundImage = "url('" + images[index] + "')";
+        bg2.style.opacity = 1;
+
+        setTimeout(()=>{
+            bg1.style.backgroundImage = bg2.style.backgroundImage;
+            bg2.style.opacity = 0;
+        },1500);
+    }
+
+    setInterval(changeHero,5000);
+
+        function searchRoom(){
+
+        let destination = document.querySelector("input[placeholder='Destination']").value;
+
+        if(destination.trim() !== ""){
+            window.location.href = "/Hotels?room=" + destination;
+        }else{
+            window.location.href = "/Hotels";
+        }
+
+    }
+
+</script>
