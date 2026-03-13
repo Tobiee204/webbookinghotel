@@ -47,29 +47,29 @@
 
         <h3 class="text-center mb-4">Create Account</h3>
 
-        <form>
+        <form method="post">
 
             <div class="mb-3">
                 <label>Full Name</label>
-                <input type="text" class="form-control" placeholder="Enter your full name">
+                <input asp-for="User.name" class="form-control">
             </div>
 
             <div class="mb-3">
                 <label>Email</label>
-                <input type="email" class="form-control" placeholder="Enter your email">
+                <input asp-for="User.email" class="form-control">
             </div>
 
             <div class="mb-3">
                 <label>Password</label>
-                <input type="password" class="form-control" placeholder="Enter password">
+                <input asp-for="User.password" type="password" class="form-control">
             </div>
 
             <div class="mb-3">
                 <label>Phone Number</label>
-                <input type="text" class="form-control" placeholder="Enter phone number">
+                <input asp-for="User.phone" class="form-control">
             </div>
 
-            <button class="btn btn-success w-100">
+            <button type="submit" class="btn btn-success w-100">
                 Register
             </button>
 

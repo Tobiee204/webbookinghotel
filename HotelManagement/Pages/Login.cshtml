@@ -50,19 +50,19 @@
 
         <h3 class="text-center mb-4">Login</h3>
 
-        <form>
+        <form method="post">
 
             <div class="mb-3">
                 <label>Email</label>
-                <input type="email" class="form-control" placeholder="Enter email">
+                <input asp-for="Email" class="form-control">
             </div>
 
             <div class="mb-3">
                 <label>Password</label>
-                <input type="password" class="form-control" placeholder="Enter password">
+                <input asp-for="Password" type="password" class="form-control">
             </div>
 
-            <button class="btn btn-primary w-100">
+            <button type="submit" class="btn btn-primary w-100">
                 Login
             </button>
 
