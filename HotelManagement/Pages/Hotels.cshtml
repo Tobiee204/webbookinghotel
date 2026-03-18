@@ -1,7 +1,4 @@
 ﻿@page
-@{
-    var room = Request.Query["room"].ToString().ToLower();
-}
 @model HotelManagement.Pages.HotelsModel
 
 <section class="container py-5">
@@ -10,132 +7,41 @@
 
     <div class="row g-4">
 
-        <!-- Luxury Room -->
-        @if (string.IsNullOrEmpty(room) || "luxury room".Contains(room) || "luxury".Contains(room))
+        @foreach (var r in Model.Rooms)
         {
             <div class="col-md-4">
                 <div class="card room-card shadow">
 
-                    <img src="/images/Luxury.png" class="card-img-top">
+                    <img src="@(string.IsNullOrEmpty(r.image) ? "/images/default.jpg" : r.image)"
+                         class="card-img-top">
 
                     <div class="card-body text-center">
 
-                        <h5 class="card-title">Luxury Room</h5>
+                        <h5>@r.title</h5>
+                        <p class="text-muted">@r.room_type</p>
 
-                        <p class="text-muted">Ho Chi Minh City</p>
+                        <p class="text-primary fw-bold">
+                            @r.price VNĐ
+                        </p>
+
+                        <p class="text-success">
+                            Status: @r.status
+                        </p>
 
                         <p>
-                            King-size bed • 2 Guests
+                            👤 @r.guests guests | 🛏 @r.bed_type
                         </p>
 
-                        <p class="fw-bold text-primary">
-                            $1.200.000 / day
-                        </p>
-
-                        <p class="text-success fw-bold">
-                            Status: Available
-                        </p>
-
-                        <a asp-page="/HotelDetails" class="btn btn-outline-primary">
+                        <a asp-page="/HotelDetails" asp-route-id="@r.room_id" class="btn btn-outline-primary">
                             View Details
                         </a>
 
-                        <a asp-page="/BookRoom" asp-route-room="Luxury" class="btn btn-primary mt-2">
-                            Book Now
-                        </a>
-
                     </div>
-
                 </div>
-
             </div>
         }
 
-        <!-- Superior Room -->
-        @if (string.IsNullOrEmpty(room) || "superior room".Contains(room) || "superior".Contains(room))
-        {
-            <div class="col-md-4">
-
-                <div class="card room-card shadow">
-
-                    <img src="/images/Superior.png" class="card-img-top">
-
-                    <div class="card-body text-center">
-
-                        <h5 class="card-title">Superior Room</h5>
-
-                        <p class="text-muted">Ho Chi Minh City</p>
-
-                        <p>
-                            Queen bed • 2 Guests
-                        </p>
-
-                        <p class="fw-bold text-primary">
-                            $1.000.000 / day
-                        </p>
-
-                        <p class="text-success fw-bold">
-                            Status: Available
-                        </p>
-
-                        <a asp-page="/HotelDetails" class="btn btn-outline-primary">
-                            View Details
-                        </a>
-
-                        <a asp-page="/BookRoom" asp-route-room="Luxury" class="btn btn-primary mt-2">
-                            Book Now
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-        }
-
-        <!-- Standard Room -->
-        @if (string.IsNullOrEmpty(room) || "standard room".Contains(room) || "standard".Contains(room))
-        {
-            <div class="col-md-4">
-
-                <div class="card room-card shadow">
-
-                    <img src="/images/Standard.png" class="card-img-top">
-
-                    <div class="card-body text-center">
-
-                        <h5 class="card-title">Standard Room</h5>
-
-                        <p class="text-muted">Ho Chi Minh City</p>
-
-                        <p>
-                            Standard bed • 2 Guests
-                        </p>
-
-                        <p class="fw-bold text-primary">
-                            $850.000 / day
-                        </p>
-
-                        <p class="text-success fw-bold">
-                            Status: Available
-                        </p>
-
-                        <a asp-page="/HotelDetails" class="btn btn-outline-primary">
-                            View Details
-                        </a>
-
-                        <a asp-page="/BookRoom" asp-route-room="Luxury" class="btn btn-primary mt-2">
-                            Book Now
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            }
-            </div>
+    </div>
 
 </section>
 

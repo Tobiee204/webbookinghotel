@@ -7,7 +7,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title>Hotel Admin</title>
-
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free/css/all.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
@@ -69,14 +68,6 @@
 						</li>
 
 						<li class="nav-item">
-							<a href="/Admin/AddHotel"
-							   class="nav-link @(Context.Request.Path.Value.Contains("AddHotel") ? "active" : "")">
-								<i class="nav-icon fas fa-plus"></i>
-								<p>Add Hotel</p>
-							</a>
-						</li>
-
-						<li class="nav-item">
 							<a href="/Admin/ManageRooms"
 							   class="nav-link @(Context.Request.Path.Value.Contains("ManageRooms") ? "active" : "")">
 								<i class="nav-icon fas fa-door-open"></i>
@@ -134,7 +125,7 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-	<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script> -->
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int}"
 @model HotelManagement.Pages.HotelDetailsModel
 
 <section class="container py-5">
@@ -6,49 +6,40 @@
     <div class="row">
 
         <!-- Room Image -->
-
         <div class="col-md-6">
 
-            <img src="/images/Luxury.png" class="img-fluid rounded shadow">
+            <img src="@(string.IsNullOrEmpty(Model.Room.image) ? "/images/default.jpg" : Model.Room.image)"
+                 class="img-fluid rounded shadow">
 
         </div>
 
         <!-- Room Info -->
-
         <div class="col-md-6">
 
-            <h2>Luxury Room</h2>
+            <h2>@Model.Room.title</h2>
 
             <p class="text-muted">
-                Ho Chi Minh City
+                @Model.Room.room_type
             </p>
 
             <h4 class="text-primary">
-                $1.200.000 / day
+                @Model.Room.price VNĐ / day
             </h4>
 
             <p class="mt-3">
-
-                Experience premium comfort in our luxury room with modern design,
-                king-size bed, and stunning city views. Perfect for couples or
-                business travelers looking for a relaxing stay.
-
+                @Model.Room.description
             </p>
 
             <h5 class="mt-4">Room Facilities</h5>
 
             <ul>
-
-                <li>Free WiFi</li>
-                <li>Smart TV</li>
-                <li>Air Conditioner</li>
-                <li>Mini Bar</li>
-                <li>Private Bathroom</li>
-                <li>City View</li>
-
+                @foreach (var f in Model.FacilitiesList)
+                {
+                    <li>@f</li>
+                }
             </ul>
 
-            <a asp-page="/BookRoom" asp-route-room="Luxury" class="btn btn-primary btn-lg">
+            <a asp-page="/BookRoom" asp-route-id="@Model.Room.room_id" class="btn btn-primary btn-lg">
                 Book This Room
             </a>
 
