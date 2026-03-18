@@ -23,104 +23,88 @@
 
                 <tr>
                     <th>ID</th>
-                    <th>Hotel</th>
+                    <th>Title</th>
                     <th>Room Type</th>
                     <th>Price</th>
                     <th>Status</th>
-                    <th width="120">Action</th>
+                    <th width="150">Action</th>
                 </tr>
 
             </thead>
 
             <tbody>
 
-                <tr>
-                    <td>1</td>
-                    <td>Hilton</td>
-                    <td>Deluxe</td>
-                    <td>$120</td>
+                @foreach (var r in Model.Rooms)
+                {
+                    <tr>
+                        <td>@r.room_id</td>
+                        <td>@r.title</td>
+                        <td>@r.room_type</td>
+                        <td>@r.price</td>
 
-                    <td>
-                        <span class="badge bg-success">Available</span>
-                    </td>
+                        <td>
+                            @if (r.status == "Available")
+                            {
+                                <span class="badge bg-success">Available</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">@r.status</span>
+                            }
+                        </td>
 
-                    <td>
+                        <td>
 
-                        <button class="btn btn-warning btn-sm">
-                            <i class="fas fa-edit"></i>
-                        </button>
+                            <!-- EDIT -->
+                            <a asp-page="/Admin/EditRoom" asp-route-id="@r.room_id"
+                               class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
 
-                        <button class="btn btn-danger btn-sm"
-                                onclick="return confirm('Are you sure you want to delete this room?')">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                            <!-- DELETE -->
+                            <form method="post"
+                                  asp-page-handler="Delete"
+                                  asp-route-id="@r.room_id"
+                                  style="display:inline">
 
-                    </td>
+                                <button class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this room?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
 
-                </tr>
+                            </form>
 
-                <tr>
-                    <td>2</td>
-                    <td>Marriott</td>
-                    <td>Suite</td>
-                    <td>$200</td>
+                        </td>
 
-                    <td>
-                        <span class="badge bg-danger">Booked</span>
-                    </td>
-
-                    <td>
-
-                        <button class="btn btn-warning btn-sm">
-                            <i class="fas fa-edit"></i>
-                        </button>
-
-                        <button class="btn btn-danger btn-sm"
-                                onclick="return confirm('Are you sure you want to delete this room?')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-
-                    </td>
-
-                </tr>
+                    </tr>
+                }
 
             </tbody>
 
         </table>
 
-
-        <!-- Pagination -->
-
+        <!-- Pagination (giữ nguyên nếu bạn chưa làm backend) -->
         <div class="d-flex justify-content-end mt-3">
-
             <button class="btn btn-outline-secondary btn-sm me-1">Previous</button>
-
             <button class="btn btn-outline-primary btn-sm me-1">1</button>
             <button class="btn btn-outline-secondary btn-sm me-1">2</button>
             <button class="btn btn-outline-secondary btn-sm me-1">3</button>
-
             <button class="btn btn-outline-secondary btn-sm">Next</button>
-
         </div>
 
     </div>
 </div>
 
-
 <script>
-
-    document.getElementById("searchRoom").addEventListener("keyup", function(){
+    document.getElementById("searchRoom").addEventListener("keyup", function () {
 
         var value = this.value.toLowerCase();
         var rows = document.querySelectorAll("#roomTable tbody tr");
 
-        rows.forEach(function(row){
-
+        rows.forEach(function (row) {
             row.style.display = row.textContent.toLowerCase().includes(value)
-            ? "" : "none";
-
+                ? "" : "none";
         });
 
     });
-
 </script>

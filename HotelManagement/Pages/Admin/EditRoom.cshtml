@@ -1,0 +1,84 @@
+﻿@page
+@model HotelManagement.Pages.Admin.EditRoomModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container py-5">
+
+    <div class="card shadow-lg p-4">
+
+        <h3 class="mb-4 text-center">Edit Room</h3>
+
+        <form method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Room.room_id" />
+
+            <!-- Title -->
+            <div class="mb-3">
+                <label>Room Title</label>
+                <input asp-for="Room.title" class="form-control">
+            </div>
+
+            <!-- Location -->
+            <div class="mb-3">
+                <label>Location</label>
+                <input asp-for="Room.room_type" class="form-control">
+            </div>
+
+            <!-- Price -->
+            <div class="mb-3">
+                <label>Price</label>
+                <input asp-for="Room.price" type="number" class="form-control">
+            </div>
+
+            <!-- Guests -->
+            <div class="mb-3">
+                <label>Guests</label>
+                <input asp-for="Room.guests" type="number" class="form-control">
+            </div>
+
+            <!-- Bed Type -->
+            <div class="mb-3">
+                <label>Bed Type</label>
+                <input asp-for="Room.bed_type" class="form-control">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label>Description</label>
+                <textarea asp-for="Room.description" class="form-control"></textarea>
+            </div>
+
+            <!-- Facilities -->
+            <div class="mb-3">
+                <label>Facilities</label>
+                <input asp-for="Room.facilities" class="form-control">
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+                <label>Status</label>
+                <select asp-for="Room.status" class="form-control">
+                    <option>Available</option>
+                    <option>Booked</option>
+                    <option>Maintenance</option>
+                </select>
+            </div>
+
+            <!-- Image -->
+            <div class="mb-3">
+                <label>Room Image</label>
+                <input type="file" name="Upload" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Update Room
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
