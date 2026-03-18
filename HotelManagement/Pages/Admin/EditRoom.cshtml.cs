@@ -43,6 +43,7 @@ namespace HotelManagement.Pages.Admin
 
             if (room == null)
             {
+                TempData["SuccessMessage"] = "Update room successfully!";
                 return RedirectToPage("/Admin/ManageRooms");
             }
 

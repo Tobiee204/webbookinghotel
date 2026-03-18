@@ -87,7 +87,9 @@ namespace HotelManagement.Pages.Admin
 
             SuccessMessage = "? Room added successfully!";
 
-            return RedirectToPage("/Admin/AddRoom");
+            TempData["SuccessMessage"] = "Add room successfully!";
+            ModelState.Clear(); // reset form
+            return Page();
         }
 
     }
