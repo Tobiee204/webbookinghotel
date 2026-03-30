@@ -6,25 +6,13 @@
 
 <div class="container-fluid">
 
-    <!-- STATISTICS -->
+    <!-- KPI -->
     <div class="row">
 
-        <div class="col-lg-3 col-md-6 col-12">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>25</h3>
-                    <p>Hotels</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-hotel"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 col-12">
+        <div class="col-lg-3 col-md-6">
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>120</h3>
+                    <h3>@Model.TotalRooms</h3>
                     <p>Rooms</p>
                 </div>
                 <div class="icon">
@@ -33,10 +21,10 @@
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 col-12">
+        <div class="col-lg-3 col-md-6">
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>320</h3>
+                    <h3>@Model.TotalBookings</h3>
                     <p>Bookings</p>
                 </div>
                 <div class="icon">
@@ -45,10 +33,10 @@
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 col-12">
+        <div class="col-lg-3 col-md-6">
             <div class="small-box bg-danger">
                 <div class="inner">
-                    <h3>80</h3>
+                    <h3>@Model.TotalUsers</h3>
                     <p>Users</p>
                 </div>
                 <div class="icon">
@@ -57,98 +45,89 @@
             </div>
         </div>
 
-    </div>
-
-
-    <!-- TABLE + ACTIONS -->
-    <div class="row">
-
-        <!-- RECENT BOOKINGS -->
-        <div class="col-lg-8">
-
-            <div class="card">
-
-                <div class="card-header">
-                    <h3 class="card-title">Recent Bookings</h3>
+        <div class="col-lg-3 col-md-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>@Model.TotalRevenue.ToString("N0") VND</h3>
+                    <p>Revenue</p>
                 </div>
-
-                <div class="card-body table-responsive">
-
-                    <table class="table table-bordered table-striped">
-
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>User</th>
-                                <th>Hotel</th>
-                                <th>Room</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-                                <td>1001</td>
-                                <td>John</td>
-                                <td>Hilton</td>
-                                <td>Deluxe</td>
-                                <td><span class="badge bg-success">Confirmed</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>1002</td>
-                                <td>Anna</td>
-                                <td>Marriott</td>
-                                <td>Suite</td>
-                                <td><span class="badge bg-warning">Pending</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>1003</td>
-                                <td>Mike</td>
-                                <td>Sheraton</td>
-                                <td>Standard</td>
-                                <td><span class="badge bg-danger">Cancelled</span></td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
+                <div class="icon">
+                    <i class="fas fa-money-bill"></i>
                 </div>
-
             </div>
-
         </div>
 
+    </div>
 
-        <!-- QUICK ACTIONS -->
-        <div class="col-lg-4">
+    <!-- BUTTON GO TO STATISTICS -->
+    <div class="mb-4">
+        <a href="/Admin/Statistics" class="btn btn-primary">
+            <i class="fas fa-chart-line"></i> View Statistics
+        </a>
+    </div>
 
-            <div class="card">
+    <!-- TABLE -->
+    <div class="card">
 
-                <div class="card-header">
-                    <h3 class="card-title">Quick Actions</h3>
-                </div>
+        <div class="card-header">
+            <h3 class="card-title">Recent Bookings</h3>
+        </div>
 
-                <div class="card-body">
+        <div class="card-body table-responsive">
 
-                    <a href="/Admin/AddRoom" class="btn btn-success w-100 mb-3">
-                        <i class="fas fa-bed"></i> Add Room
-                    </a>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Room</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
 
-                    <a href="/Admin/ManageBookings" class="btn btn-warning w-100 mb-3">
-                        <i class="fas fa-calendar"></i> View Bookings
-                    </a>
+                <tbody>
+                    @foreach (var b in Model.RecentBookings)
+                    {
+                        <tr>
+                            <td>@b.booking_id</td>
+                            <td>@b.User?.name</td>
+                            <td>@b.Room?.title</td>
 
-                    <a href="/Admin/ManageHotels" class="btn btn-info w-100">
-                        <i class="fas fa-hotel"></i> Manage Hotels
-                    </a>
+                            <td>
+                                @if (b.status == "pending")
+                                {
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                                else if (b.status == "confirmed")
+                                {
+                                    <span class="badge bg-success">Confirmed</span>
+                                }
+                                else if (b.status == "cancelled")
+                                {
+                                    <span class="badge bg-secondary">Cancelled</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Unpaid</span>
+                                }
+                            </td>
 
-                </div>
+                            <td>
+                                @if (b.Payment != null)
+                                {
+                                    <span class="badge bg-success">Paid</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Pending</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
 
-            </div>
+            </table>
 
         </div>
 

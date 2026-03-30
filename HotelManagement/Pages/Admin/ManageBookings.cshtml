@@ -9,6 +9,13 @@
 
     <div class="card-body">
 
+        <div class="mb-3">
+            <a href="?status=all" class="btn btn-secondary btn-sm">All</a>
+            <a href="?status=confirmed" class="btn btn-success btn-sm">Confirmed</a>
+            <a href="?status=pending" class="btn btn-warning btn-sm">Pending</a>
+            <a href="?status=cancelled" class="btn btn-danger btn-sm">Cancelled</a>
+        </div>
+
         <input type="text" id="searchBooking" class="form-control mb-3" placeholder="Search booking...">
 
         <table class="table table-bordered table-striped" id="bookingTable">
@@ -28,64 +35,46 @@
             </thead>
 
             <tbody>
+                @foreach (var b in Model.Bookings)
+                {
+                    <tr>
+                        <td>@b.booking_id</td>
+                        <td>@b.User?.name</td>
+                        <td>Angel Hotel</td>
+                        <td>@b.Room?.title</td>
+                        <td>@b.check_in.ToShortDateString()</td>
 
-                <tr>
-                    <td>1001</td>
-                    <td>John</td>
-                    <td>Hilton</td>
-                    <td>Deluxe</td>
-                    <td>12/03/2026</td>
+                        <td>
+                            @if (b.status == "confirmed")
+                            {
+                                <span class="badge bg-success">Confirmed</span>
+                            }
+                            else if (b.status == "pending")
+                            {
+                                <span class="badge bg-warning">Pending</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">@b.status</span>
+                            }
+                        </td>
 
-                    <td>
-                        <span class="badge bg-success">Confirmed</span>
-                    </td>
-
-                    <td>
-                        <button class="btn btn-danger btn-sm">
-                            Cancel
-                        </button>
-                    </td>
-
-                </tr>
-
-                <tr>
-                    <td>1002</td>
-                    <td>Anna</td>
-                    <td>Marriott</td>
-                    <td>Suite</td>
-                    <td>14/03/2026</td>
-
-                    <td>
-                        <span class="badge bg-warning">Pending</span>
-                    </td>
-
-                    <td>
-                        <button class="btn btn-success btn-sm">
-                            Confirm
-                        </button>
-                    </td>
-
-                </tr>
-
-                <tr>
-                    <td>1003</td>
-                    <td>Mike</td>
-                    <td>Sheraton</td>
-                    <td>Standard</td>
-                    <td>16/03/2026</td>
-
-                    <td>
-                        <span class="badge bg-danger">Cancelled</span>
-                    </td>
-
-                    <td>
-                        <button class="btn btn-secondary btn-sm">
-                            View
-                        </button>
-                    </td>
-
-                </tr>
-
+                        <td>
+                            @if (b.status == "pending")
+                            {
+                                <form method="post" asp-page-handler="UpdateStatus">
+                                    <input type="hidden" name="id" value="@b.booking_id" />
+                                    <button name="status" value="confirmed" class="btn btn-success btn-sm">Confirm</button>
+                                    <button name="status" value="cancelled" class="btn btn-danger btn-sm">Cancel</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No Action</span>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
 
         </table>

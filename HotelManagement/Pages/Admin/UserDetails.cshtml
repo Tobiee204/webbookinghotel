@@ -1,0 +1,77 @@
+﻿@page
+@model HotelManagement.Pages.Admin.UserDetailsModel
+@{
+}
+<h3>User Details</h3>
+
+<p><strong>Name:</strong> @Model.User.name</p>
+<p><strong>Email:</strong> @Model.User.email</p>
+<p><strong>Phone:</strong> @Model.User.phone</p>
+
+<h4>Bookings</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Room</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Status</th>
+            <th>Payment</th>
+			<th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var b in Model.User.Bookings)
+        {
+            <tr>
+                <td>@b.Room.title</td>
+                <td>@b.check_in</td>
+                <td>@b.check_out</td>
+
+                <td>
+                    @if (b.status == "pending")
+                    {
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    }
+                    else if (b.status == "confirmed")
+                    {
+                        <span class="badge bg-success">Confirmed</span>
+                    }
+                    else if (b.status == "cancelled")
+                    {
+                        <span class="badge bg-secondary">Cancelled</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Unpaid</span>
+                    }
+                </td>
+
+                <td>
+                    @if (b.Payment != null)
+                    {
+                        <span class="badge bg-success">Paid</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Not Paid</span>
+                    }
+                </td>
+
+                <td>
+                    @if (b.Payment != null)
+                    {
+                        <span class="text-success fw-bold">
+                            @b.Payment.amount.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">0 VNĐ</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -3,7 +3,33 @@
 
 <section class="container py-5">
 
-    <h2 class="text-center mb-5">Available Rooms</h2>
+    <h2 class="text-center mb-5">Rooms</h2>
+
+    <div class="d-flex justify-content-center mb-4">
+        <div class="btn-group shadow-sm">
+
+            <a href="?status=all"
+               class="btn btn-outline-dark @(Request.Query["status"] == "all" || string.IsNullOrEmpty(Request.Query["status"]) ? "active" : "")">
+                All
+            </a>
+
+            <a href="?status=Available"
+               class="btn btn-outline-success @(Request.Query["status"] == "Available" ? "active" : "")">
+                Available
+            </a>
+
+            <a href="?status=pending"
+               class="btn btn-outline-warning @(Request.Query["status"] == "Pending" ? "active" : "")">
+                Pending
+            </a>
+
+            <a href="?status=booked"
+               class="btn btn-outline-danger @(Request.Query["status"] == "Booked" ? "active" : "")">
+                Booked
+            </a>
+
+        </div>
+    </div>
 
     <div class="row g-4">
 
@@ -21,11 +47,23 @@
                         <p class="text-muted">@r.room_type</p>
 
                         <p class="text-primary fw-bold">
-                            @r.price VNĐ
+                            @r.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ
                         </p>
 
-                        <p class="text-success">
-                            Status: @r.status
+                        <p>
+                            Status:
+                            @if (r.status == "Available")
+                            {
+                                <span class="badge bg-success">Available</span>
+                            }
+                            else if (r.status == "pending")
+                            {
+                                <span class="badge bg-warning">Pending</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">@r.status</span>
+                            }
                         </p>
 
                         <p>

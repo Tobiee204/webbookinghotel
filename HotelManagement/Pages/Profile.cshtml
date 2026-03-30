@@ -1,4 +1,297 @@
 ﻿@page
 @model HotelManagement.Pages.ProfileModel
-@{
-}
+
+
+<style>
+    .otp-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: center; /* 👈 căn ngang */
+        align-items: center; /* 👈 căn dọc */
+        z-index: 999;
+    }
+
+    .otp-box {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        width: 350px;
+    }
+</style>
+
+<div class="container mt-5">
+
+    <div class="card p-4 shadow">
+
+        <div class="text-center mb-4 position-relative">
+
+            <!-- AVATAR -->
+            <div class="text-center mb-4 position-relative">
+
+                <img src="@(string.IsNullOrEmpty(Model.CurrentUser.avatar)
+                                     ? "/images/default-avatar.png"
+                                     : Model.CurrentUser.avatar)"
+                     style="width:100px; height:100px; border-radius:50%; object-fit:cover;" />
+
+                <!-- FORM UPLOAD -->
+                <form method="post" enctype="multipart/form-data" asp-page-handler="UploadAvatar">
+                    <input type="file" name="avatarFile" id="avatarInput" hidden onchange="this.form.submit()" />
+
+                    <button type="button"
+                            onclick="document.getElementById('avatarInput').click()"
+                            class="btn btn-sm btn-light"
+                            style="position:absolute; right:40%; top:70%;">
+                        ✏️
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- FULL NAME -->
+        <div class="mb-3">
+            <label>Full Name</label>
+
+            <!-- VIEW MODE -->
+            <div id="nameView" class="input-group">
+                <input value="@Model.CurrentUser.name" class="form-control" readonly />
+                <button type="button" class="btn btn-outline-secondary" onclick="editName()">✏️</button>
+            </div>
+
+            <!-- EDIT MODE -->
+            <form method="post" asp-page-handler="UpdateName" id="nameEdit" style="display:none;">
+                <div class="input-group">
+                    <input name="name" value="@Model.CurrentUser.name" class="form-control" />
+                    <button class="btn btn-success">OK</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="mb-3">
+            <label>Email</label>
+            <input value="@Model.CurrentUser.email" class="form-control" readonly />
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="mb-3">
+            <label>Password</label>
+            <div class="input-group">
+                <input type="password" value="********" class="form-control" readonly />
+                <button type="button" class="btn btn-outline-secondary" onclick="openChangePass()">✏️</button>
+            </div>
+        </div>
+
+        <!-- CHANGE PASSWORD MODAL -->
+        <div id="changePassBox" class="otp-overlay" style="display:none;">
+            <div class="otp-box">
+
+                <h4>Change Password</h4>
+
+                <!-- STEP 1 -->
+                <div id="cp-step1">
+
+                    <input type="password" id="oldPass" placeholder="Old Password" class="form-control mb-2">
+
+                    <input type="password" id="newPass" placeholder="New Password" class="form-control mb-2">
+
+                    <!-- RULE -->
+                    <div id="password-rules" class="small mb-2">
+                        <div id="rule-length">❌ At least 8 characters</div>
+                        <div id="rule-lower">❌ Lowercase letter</div>
+                        <div id="rule-upper">❌ Uppercase letter</div>
+                        <div id="rule-number">❌ Number</div>
+                        <div id="rule-special">❌ Special character</div>
+                    </div>
+
+                    <input type="password" id="confirmPass" placeholder="Confirm Password" class="form-control mb-2">
+
+                    <button onclick="requestOTP()" class="btn btn-primary w-100">Change Password</button>
+                </div>
+
+                <!-- STEP 2 OTP -->
+                <div id="cp-step2" style="display:none;">
+                    <div class="otp-inputs">
+                        <input maxlength="1" class="otp" />
+                        <input maxlength="1" class="otp" />
+                        <input maxlength="1" class="otp" />
+                        <input maxlength="1" class="otp" />
+                        <input maxlength="1" class="otp" />
+                        <input maxlength="1" class="otp" />
+                    </div>
+                </div>
+
+                <button onclick="closeChangePass()" class="btn btn-secondary w-100 mt-2">Close</button>
+            </div>
+        </div>
+
+        <!-- PHONE -->
+        <div class="mb-3">
+            <label>Phone</label>
+            <input value="@Model.CurrentUser.phone" class="form-control" readonly />
+        </div>
+
+    </div>
+
+    <hr />
+
+
+    <!-- BOOKING HISTORY -->
+    <h4>Booking History</h4>
+
+    <table class="table">
+        <tr>
+            <th>Room</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Status</th>
+        </tr>
+
+        @foreach (var b in Model.Bookings)
+        {
+            <tr>
+                <td>@b.RoomTitle</td>
+                <td>@b.CheckIn.ToShortDateString()</td>
+                <td>@b.CheckOut.ToShortDateString()</td>
+                <td>
+                    @if (b.Status == "pending")
+                    {
+                        <span class="badge bg-warning">Pending</span>
+                    }
+                    else if (b.Status == "confirmed")
+                    {
+                        <span class="badge bg-success">Confirmed</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">@b.Status</span>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+
+</div>
+
+<script>
+    function openChangePass() {
+        document.getElementById("changePassBox").style.display = "flex";
+    }
+
+    function closeChangePass() {
+        document.getElementById("changePassBox").style.display = "none";
+    }
+</script>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+        const newPassInput = document.getElementById("newPass");
+
+        if (newPassInput) {
+            newPassInput.addEventListener("input", function () {
+                const v = newPassInput.value;
+
+                check("rule-length", v.length >= 8);
+                check("rule-lower", /[a-z]/.test(v));
+                check("rule-upper", /[A-Z]/.test(v));
+                check("rule-number", /[0-9]/.test(v));
+                check("rule-special", /[\W_]/.test(v));
+            });
+        }
+    });
+
+        function check(id, ok) {
+        const el = document.getElementById(id);
+
+        if (ok) {
+            el.innerHTML = "✅ " + el.innerHTML.substring(2);
+            el.style.color = "green";
+        } else {
+            el.innerHTML = "❌ " + el.innerHTML.substring(2);
+            el.style.color = "red";
+        }
+    }
+</script>
+
+<script>
+        function editName() {
+        document.getElementById("nameView").style.display = "none";
+        document.getElementById("nameEdit").style.display = "block";
+    }
+
+    function requestOTP() {
+        const oldPass = document.getElementById("oldPass").value;
+        const newPass = document.getElementById("newPass").value;
+        const confirm = document.getElementById("confirmPass").value;
+
+        if (newPass !== confirm) {
+            alert("Password not match");
+            return;
+        }
+
+        fetch("/Profile?handler=SendOTP", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: `oldPass=${oldPass}&newPass=${newPass}`
+        })
+        .then(r => r.text())
+        .then(res => {
+            if (res === "ok") {
+                document.getElementById("cp-step1").style.display = "none";
+                document.getElementById("cp-step2").style.display = "block";
+            } else {
+                alert(res);
+            }
+        });
+    }
+</script>
+
+<script>
+    const otpInputs = document.querySelectorAll(".otp");
+
+    otpInputs.forEach((input, index) => {
+        input.addEventListener("input", () => {
+
+            if (input.value && index < 5) {
+                otpInputs[index + 1].focus();
+            }
+
+            let otp = "";
+            otpInputs.forEach(i => otp += i.value);
+
+            if (otp.length === 6) {
+                verifyOTP(otp);
+            }
+        });
+    });
+
+    function verifyOTP(otp) {
+        fetch("/Profile?handler=VerifyOTP", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: "otp=" + otp
+        })
+        .then(r => r.text())
+        .then(res => {
+            if (res === "done") {
+                alert("Password changed!");
+                location.reload();
+            } else {
+                alert("Wrong OTP");
+            }
+        });
+    }
+</script>

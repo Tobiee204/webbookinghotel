@@ -6,7 +6,10 @@ namespace HotelManagement.Models
     {
         [Key]
         public int payment_id { get; set; }
+
         public int booking_id { get; set; }
+        public Booking Booking { get; set; }
+
         public decimal amount { get; set; }
         public string payment_method { get; set; }
         public DateTime payment_date { get; set; }

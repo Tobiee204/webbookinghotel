@@ -1,0 +1,103 @@
+﻿@page
+@model HotelManagement.Pages.Admin.StatisticsModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+
+    <h2 class="mb-4">Statistics</h2>
+
+    <!-- FILTER -->
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <label>From Date</label>
+                <input type="date" name="FromDate" class="form-control" />
+            </div>
+
+            <div class="col-md-4">
+                <label>To Date</label>
+                <input type="date" name="ToDate" class="form-control" />
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>@Model.TotalRooms</h3>
+                    <p>Total Rooms</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>@Model.BookedRooms</h3>
+                    <p>Booked Rooms</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>@Model.AvailableRooms</h3>
+                    <p>Available Rooms</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>@Model.TotalUsers</h3>
+                    <p>Users</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+
+        <div class="col-md-3">
+            <div class="small-box bg-secondary">
+                <div class="inner">
+                    <h3>@Model.CancelledBookings</h3>
+                    <p>Cancelled</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="small-box bg-dark">
+                <div class="inner">
+                    <h3>@Model.TotalReviews</h3>
+                    <p>Reviews</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>@Model.TotalRevenue.ToString("N0") VND</h3>
+                    <p>Revenue</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

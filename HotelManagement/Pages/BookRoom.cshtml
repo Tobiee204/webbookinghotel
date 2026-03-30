@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int}"
 @model HotelManagement.Pages.BookRoomModel
 
 <section class="container py-5">
@@ -12,22 +12,22 @@
 
             <div class="card shadow">
 
-                <img src="/images/Luxury.png" class="card-img-top">
+                <img src="@(string.IsNullOrEmpty(Model.Room.image) ? "/images/default.jpg" : Model.Room.image)" class="card-img-top">
 
                 <div class="card-body">
 
-                    <h4>Luxury Room</h4>
+                    <h4>@Model.Room.title</h4>
 
-                    <p class="text-muted">Ho Chi Minh City</p>
+                    <p class="text-muted">@Model.Room.room_type</p>
 
-                    <p>King-size bed • 2 Guests</p>
+                    <p>🛏 @Model.Room.bed_type • 👤 @Model.Room.guests guests</p>
 
                     <p class="text-primary fw-bold fs-5">
-                        $1.200.000 / day
+                        @Model.Room.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
                     </p>
 
                     <p class="text-success fw-bold">
-                        Status: Available
+                        Status: @Model.Room.status
                     </p>
 
                 </div>
@@ -43,57 +43,40 @@
 
                 <h4 class="mb-4">Booking Information</h4>
 
-                <form>
+                <form method="post">
 
                     <div class="row g-3">
-
-                        <!-- Full Name -->
-                        <div class="col-md-6">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" placeholder="Enter your name">
-                        </div>
-
-                        <!-- Email -->
-                        <div class="col-md-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" placeholder="Enter email">
-                        </div>
-
-                        <!-- Phone -->
-                        <div class="col-md-6">
-                            <label class="form-label">Phone</label>
-                            <input type="text" class="form-control" placeholder="Phone number">
-                        </div>
-
-                        <!-- Guests -->
-                        <div class="col-md-6">
-                            <label class="form-label">Guests</label>
-                            <select class="form-select">
-                                <option>1 Person</option>
-                                <option>2 People</option>
-                                <option>3 People</option>
-                                <option>4 People</option>
-                            </select>
-                        </div>
 
                         <!-- Check-in -->
                         <div class="col-md-6">
                             <label class="form-label">Check-in Date</label>
-                            <input type="date" class="form-control">
+                            <input asp-for="CheckIn" type="date" class="form-control" required>
                         </div>
 
                         <!-- Check-out -->
                         <div class="col-md-6">
                             <label class="form-label">Check-out Date</label>
-                            <input type="date" class="form-control">
+                            <input asp-for="CheckOut" type="date" class="form-control" required>
                         </div>
 
-                        <!-- Special Request -->
-                        <div class="col-12">
-                            <label class="form-label">Special Request</label>
-                            <textarea class="form-control" rows="3"
-                                      placeholder="Any special request?"></textarea>
+                        <!-- Guests -->
+                        <div class="col-md-6">
+                            <label class="form-label">Guests</label>
+                            <select asp-for="Guests" class="form-select">
+                                <option value="1">1 Person</option>
+                                <option value="2">2 People</option>
+                                <option value="3">3 People</option>
+                                <option value="4">4 People</option>
+                            </select>
                         </div>
+
+                        <div class="col-12">
+                            <h5>
+                                Total Price:
+                                <span id="totalPrice" class="text-primary">0 VNĐ</span>
+                            </h5>
+                        </div>
+
 
                     </div>
 
@@ -111,30 +94,23 @@
 
 </section>
 
-<style>
+<script>
+    function calculateTotal() {
+        let checkIn = new Date(document.querySelector("[name='CheckIn']").value);
+        let checkOut = new Date(document.querySelector("[name='CheckOut']").value);
 
-    .card {
-        border: none;
-        border-radius: 12px;
+        if (!checkIn || !checkOut) return;
+
+        let days = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
+
+        let price = @Model.Room.price;
+
+        if (days > 0) {
+            document.getElementById("totalPrice").innerText =
+                (days * price).toLocaleString('vi-VN') + " VNĐ";
+        }
     }
 
-    .card-img-top {
-        height: 260px;
-        object-fit: cover;
-    }
-
-    form input,
-    form select,
-    form textarea {
-        height: 45px;
-    }
-
-    textarea {
-        height: auto !important;
-    }
-
-    button {
-        font-size: 18px;
-    }
-
-</style>
+    document.querySelector("[name='CheckIn']").addEventListener("change", calculateTotal);
+    document.querySelector("[name='CheckOut']").addEventListener("change", calculateTotal);
+</script>

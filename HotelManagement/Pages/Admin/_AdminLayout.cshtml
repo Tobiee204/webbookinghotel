@@ -42,7 +42,7 @@
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
 
 			<a href="/Admin/Dashboard" class="brand-link text-center">
-				<span class="brand-text font-weight-light">Hotel Admin</span>
+				<span class="brand-text font-weight-light">Angel Hotel</span>
 			</a>
 
 			<div class="sidebar">
@@ -56,6 +56,14 @@
 							   class="nav-link @(Context.Request.Path.Value.Contains("Dashboard") ? "active" : "")">
 								<i class="nav-icon fas fa-tachometer-alt"></i>
 								<p>Dashboard</p>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a href="/Admin/ManageUsers"
+							   class="nav-link @(Context.Request.Path.Value.Contains("ManageUsers") ? "active" : "")">
+								<i class="nav-icon fas fa-users"></i>
+								<p>Manage Users</p>
 							</a>
 						</li>
 

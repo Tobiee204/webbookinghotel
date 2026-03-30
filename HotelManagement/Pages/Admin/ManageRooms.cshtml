@@ -1,6 +1,20 @@
 ﻿@page
 @model HotelManagement.Pages.Admin.ManageRoomsModel
 
+@if (TempData["Error"] != null)
+{
+    <div id="alertBox" class="alert alert-danger text-center">
+        @TempData["Error"]
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div id="alertBox" class="alert alert-success text-center">
+        @TempData["Success"]
+    </div>
+}
+
 <div class="card">
 
     <div class="card-header">
@@ -46,7 +60,7 @@
                         <td>@r.room_id</td>
                         <td>@r.title</td>
                         <td>@r.room_type</td>
-                        <td>@r.price</td>
+                        <td>@r.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ</td>
 
                         <td>
                             @if (r.status == "Available")
@@ -74,7 +88,7 @@
                                   style="display:inline">
 
                                 <button class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Are you sure you want to delete this room?')">
+                                        onclick="return confirmDelete('@r.status')">
                                     <i class="fas fa-trash"></i>
                                 </button>
 
@@ -123,4 +137,29 @@
         });
 
     });
+</script>
+
+<script>
+    function confirmDelete(status) {
+        if (status === "pending" || status === "booked") {
+            alert("Room is currently processing or already booked. Cannot delete!");
+            return false;
+        }
+
+        return confirm("Are you sure you want to delete this room?");
+    }
+</script>
+
+<script>
+    setTimeout(function () {
+        var alertBox = document.getElementById("alertBox");
+        if (alertBox) {
+            alertBox.style.transition = "opacity 0.5s";
+            alertBox.style.opacity = "0";
+
+            setTimeout(() => {
+                alertBox.remove();
+            }, 500);
+        }
+    }, 3000);
 </script>

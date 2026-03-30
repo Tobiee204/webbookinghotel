@@ -2,7 +2,6 @@
 @model HotelManagement.Pages.RegisterModel
 
 <style>
-
     body {
         margin: 0;
         overflow: hidden;
@@ -28,7 +27,6 @@
         opacity: 0;
     }
 
-    .login-card,
     .register-card {
         width: 420px;
         background: #f5e6d3;
@@ -36,6 +34,37 @@
         border-radius: 12px;
     }
 
+    .otp-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .otp-box {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .otp-inputs {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .otp {
+        width: 40px;
+        height: 50px;
+        text-align: center;
+        font-size: 24px;
+    }
 </style>
 
 <div class="bg-slide bg1"></div>
@@ -47,26 +76,63 @@
 
         <h3 class="text-center mb-4">Create Account</h3>
 
+        <!-- SUCCESS MESSAGE -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+
+        <!-- ERROR MESSAGE -->
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
+            </div>
+        }
+
         <form method="post">
 
             <div class="mb-3">
                 <label>Full Name</label>
                 <input asp-for="User.name" class="form-control">
+                <span asp-validation-for="User.name" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label>Email</label>
                 <input asp-for="User.email" class="form-control">
+                <span asp-validation-for="User.email" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label>Password</label>
-                <input asp-for="User.password" type="password" class="form-control">
+                <div style="position: relative;">
+                    <input asp-for="User.password" type="password" class="form-control" id="passwordInput">
+
+                    <span onclick="togglePassword()"
+                          style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">
+                        👁
+                    </span>
+                </div>
+                <span asp-validation-for="User.password" class="text-danger"></span>
+            </div>
+
+            <div id="password-rules" class="mt-2 small">
+
+                <div id="rule-length">❌ Password must be at least 8 characters long</div>
+                <div id="rule-lower">❌ Must contain lowercase letter</div>
+                <div id="rule-upper">❌ Must contain uppercase letter</div>
+                <div id="rule-number">❌ Must contain number</div>
+                <div id="rule-special">❌ Must contain special character</div>
+
             </div>
 
             <div class="mb-3">
                 <label>Phone Number</label>
                 <input asp-for="User.phone" class="form-control">
+                <span asp-validation-for="User.phone" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn btn-success w-100">
@@ -76,26 +142,49 @@
         </form>
 
         <div class="text-center mt-3">
-
             <p>
                 Already have an account?
                 <a asp-page="/Login">Login</a>
             </p>
-
         </div>
 
     </div>
 
 </div>
 
+@if (TempData["ShowOTP"] != null)
+{
+    <div class="otp-overlay">
+        <div class="otp-box">
+
+            <h4 class="text-center mb-3">Enter OTP</h4>
+
+            <form method="post">
+                <input type="hidden" name="action" value="verify" />
+
+                <div class="otp-inputs">
+                    <input maxlength="1" class="otp" />
+                    <input maxlength="1" class="otp" />
+                    <input maxlength="1" class="otp" />
+                    <input maxlength="1" class="otp" />
+                    <input maxlength="1" class="otp" />
+                    <input maxlength="1" class="otp" />
+                </div>
+
+                <input type="hidden" name="InputOTP" id="finalOTP" />
+
+            </form>
+
+        </div>
+    </div>
+}
 
 <script>
-
-        const images = [
-    "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb",
-    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa"
+    const images = [
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+        "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb",
+        "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa"
     ];
 
     let index = 0;
@@ -105,25 +194,99 @@
 
     bg1.style.backgroundImage = "url('" + images[0] + "')";
 
-    function changeBackground(){
-
+    function changeBackground() {
         index++;
-
-        if(index >= images.length){
-            index = 0;
-        }
+        if (index >= images.length) index = 0;
 
         bg2.style.backgroundImage = "url('" + images[index] + "')";
         bg2.style.opacity = 1;
 
-        setTimeout(()=>{
-
+        setTimeout(() => {
             bg1.style.backgroundImage = bg2.style.backgroundImage;
             bg2.style.opacity = 0;
-
-        },1500);
+        }, 1500);
     }
 
-    setInterval(changeBackground,5000);
+    setInterval(changeBackground, 5000);
+</script>
 
+<script>
+    const inputs = document.querySelectorAll(".otp");
+
+    inputs.forEach((input, index) => {
+        input.addEventListener("input", () => {
+
+            if (input.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+
+            let otp = "";
+            inputs.forEach(i => otp += i.value);
+
+            if (otp.length === 6) {
+                document.getElementById("finalOTP").value = otp;
+                input.form.submit();
+            }
+        });
+    });
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@if (TempData["ShowPopup"] != null)
+{
+    <div class="otp-overlay">
+        <div class="otp-box">
+
+            @if (TempData["ShowPopup"].ToString() == "success")
+            {
+                <h4 class="text-success">Registration Successful!</h4>
+                <button onclick="goLogin()" class="btn btn-success mt-3">OK</button>
+            }
+            else
+            {
+                <h4 class="text-danger">Invalid OTP!</h4>
+                <button onclick="closePopup()" class="btn btn-danger mt-3">OK</button>
+            }
+
+        </div>
+    </div>
+}
+
+<script>
+    function goLogin() {
+        window.location.href = "/Login";
+    }
+
+    function closePopup() {
+        window.location.href = "/Register";
+    }
+</script>
+
+<script>
+    const passwordInput = document.querySelector("input[name='User.password']");
+
+    passwordInput.addEventListener("input", function () {
+        const value = passwordInput.value;
+
+        checkRule("rule-length", value.length >= 8);
+        checkRule("rule-lower", /[a-z]/.test(value));
+        checkRule("rule-upper", /[A-Z]/.test(value));
+        checkRule("rule-number", /[0-9]/.test(value));
+        checkRule("rule-special", /[\W_]/.test(value));
+    });
+
+    function checkRule(id, condition) {
+        const el = document.getElementById(id);
+
+        if (condition) {
+            el.innerHTML = "✅ " + el.innerHTML.substring(2);
+            el.style.color = "green";
+        } else {
+            el.innerHTML = "❌ " + el.innerHTML.substring(2);
+            el.style.color = "red";
+        }
+    }
 </script>
