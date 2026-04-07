@@ -242,5 +242,26 @@ namespace HotelManagement.Pages
 
             return RedirectToPage();
         }
+
+        public IActionResult OnPostResendOTP()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+                return Content("no_user");
+
+            var user = _context.Users.FirstOrDefault(u => u.user_id == userId);
+
+            if (user == null)
+                return Content("no_user");
+
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            HttpContext.Session.SetString("OTP_PROFILE", otp);
+
+            SendOTP(user.email, otp);
+
+            return Content("sent");
+        }
     }
 }

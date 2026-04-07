@@ -184,5 +184,22 @@ namespace HotelManagement.Pages
                 smtp.Send(message);
             }
         }
+
+        public IActionResult OnPostResendOTP()
+        {
+            var email = HttpContext.Session.GetString("ResetEmail");
+
+            if (email != null)
+            {
+                var otp = new Random().Next(100000, 999999).ToString();
+
+                HttpContext.Session.SetString("OTP", otp);
+                HttpContext.Session.SetString("ResetEmail", email);
+
+                SendOTP(email, otp);
+            }
+
+            return new JsonResult("sent");
+        }
     }
 }

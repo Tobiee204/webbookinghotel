@@ -148,6 +148,10 @@
             </div>
 
             <input type="hidden" id="finalOTP" />
+
+            <button id="resendBtn" type="button" class="btn btn-secondary w-100" disabled>
+                Resend OTP (60s)
+            </button>
         </div>
 
         <div id="step3" style="display:none;">
@@ -268,7 +272,14 @@
         document.getElementById("otpInput").value = "";
         document.getElementById("newPass").value = "";
         document.getElementById("confirmPass").value = "";
+
+            // reset resendBtn
+        if (resendBtn) {
+        clearInterval(resendBtn.countdown); // nếu bạn lưu countdown ID
+        resendBtn.disabled = true;
+        resendBtn.innerText = "Resend OTP (60s)";
     }
+   }
 
     function closeForgot() {
         document.getElementById("forgotBox").style.display = "none";
@@ -370,5 +381,57 @@
 
     function goLogin() {
         window.location.href = "/Login";
+    }
+</script>
+
+<script>
+    const resendBtn = document.getElementById("resendBtn");
+
+    if (resendBtn) {
+
+        let timeLeft = 60;
+
+        startCountdown();
+
+        function startCountdown() {
+
+            resendBtn.disabled = true;
+            resendBtn.classList.remove("btn-success");
+            resendBtn.classList.add("btn-secondary");
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                resendBtn.innerText = "Resend OTP (" + timeLeft + "s)";
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    resendBtn.disabled = false;
+
+                    resendBtn.innerText = "Resend OTP";
+                    resendBtn.classList.remove("btn-secondary");
+                    resendBtn.classList.add("btn-success");
+                }
+            }, 1000);
+        }
+
+        resendBtn.addEventListener("click", function () {
+
+            resendBtn.disabled = true;
+            timeLeft = 60;
+
+            fetch("/Login?handler=ResendOTP", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "RequestVerificationToken": getToken()
+                }
+            })
+            .then(() => {
+                console.log("OTP resent");
+            });
+
+            startCountdown();
+        });
     }
 </script>

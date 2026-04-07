@@ -1,6 +1,9 @@
 ﻿@page
 @model HotelManagement.Pages.ProfileModel
 
+<form method="post">
+    @Html.AntiForgeryToken()
+</form>
 
 <style>
     .otp-overlay {
@@ -141,6 +144,10 @@
                         <input maxlength="1" class="otp" />
                         <input maxlength="1" class="otp" />
                     </div>
+
+                    <button id="resendBtnProfile" type="button" class="btn btn-secondary w-100" disabled>
+                        Resend OTP (60s)
+                    </button>
                 </div>
 
                 <button onclick="closeChangePass()" class="btn btn-secondary w-100 mt-2">Close</button>
@@ -296,6 +303,9 @@
             if (res === "ok") {
                 document.getElementById("cp-step1").style.display = "none";
                 document.getElementById("cp-step2").style.display = "block";
+
+                timeLeftProfile = 60;
+                startCountdownProfile();
             } else {
                 alert(res);
             }
@@ -341,4 +351,62 @@
             }
         });
     }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const resendBtnProfile = document.getElementById("resendBtnProfile");
+
+        if (!resendBtnProfile) return;
+
+        let timeLeftProfile = 60;
+        let countdownProfile;
+
+        function startCountdownProfile() {
+
+                if (countdownProfile) {
+                clearInterval(countdownProfile);
+                }
+
+            resendBtnProfile.disabled = true;
+            resendBtnProfile.classList.remove("btn-success");
+            resendBtnProfile.classList.add("btn-secondary");
+
+            countdownProfile = setInterval(() => {
+                timeLeftProfile--;
+                resendBtnProfile.innerText = "Resend OTP (" + timeLeftProfile + "s)";
+
+                if (timeLeftProfile <= 0) {
+                    clearInterval(countdownProfile);
+
+                    resendBtnProfile.disabled = false;
+                    resendBtnProfile.innerText = "Resend OTP";
+
+                    resendBtnProfile.classList.remove("btn-secondary");
+                    resendBtnProfile.classList.add("btn-success");
+                }
+            }, 1000);
+        }
+
+        window.startCountdownProfile = startCountdownProfile;
+
+        resendBtnProfile.addEventListener("click", function () {
+            resendBtnProfile.disabled = true;
+            timeLeftProfile = 60;
+
+            resendBtnProfile.classList.remove("btn-success");
+            resendBtnProfile.classList.add("btn-secondary");
+
+            fetch("/Profile?handler=ResendOTP", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            });
+
+            startCountdownProfile();
+        });
+    });
 </script>
