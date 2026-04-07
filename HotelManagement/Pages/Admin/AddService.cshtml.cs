@@ -2,6 +2,7 @@ using HotelManagement.Data;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using HotelManagement.Helpers;
 
 namespace HotelManagement.Pages.Admin
 {
@@ -22,6 +23,8 @@ namespace HotelManagement.Pages.Admin
 
         public IActionResult OnPost()
         {
+            var adminId = HttpContext.Session.GetInt32("UserId");
+
             if (Upload != null)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Upload.FileName);
@@ -37,6 +40,14 @@ namespace HotelManagement.Pages.Admin
 
             _context.Services.Add(Service);
             _context.SaveChanges();
+
+            LogHelper.Log(
+                _context,
+                HttpContext,
+                adminId,
+                "ADD_SERVICE",
+                $"Admin added service {Service.name} (ID: {Service.service_id})"
+            );
 
             return RedirectToPage("/Admin/ManageServices");
         }

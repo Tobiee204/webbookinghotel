@@ -106,7 +106,14 @@ namespace HotelManagement.Pages.Admin
 
             // LOG EDIT ROOM
             var adminId = HttpContext.Session.GetInt32("UserId");
-            LogHelper.Log(_context, HttpContext, adminId, "EDIT_ROOM", $"Updated room ID {Room.room_id}");
+
+            LogHelper.Log(
+                _context,
+                HttpContext,
+                adminId,
+                "EDIT_ROOM",
+                $"Admin updated room {room.room_id} | Title: {room.title} | Price: {room.price} | Status: {room.status}"
+            );
 
             TempData["SuccessMessage"] = "Update room successfully!";
             return RedirectToPage("/Admin/ManageRooms");

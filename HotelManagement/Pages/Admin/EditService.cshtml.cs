@@ -2,6 +2,7 @@ using HotelManagement.Data;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using HotelManagement.Helpers;
 
 namespace HotelManagement.Pages.Admin
 {
@@ -27,6 +28,8 @@ namespace HotelManagement.Pages.Admin
 
         public IActionResult OnPost()
         {
+            var adminId = HttpContext.Session.GetInt32("UserId");
+
             var existing = _context.Services.Find(Service.service_id);
 
             if (existing == null) return NotFound();
@@ -49,6 +52,14 @@ namespace HotelManagement.Pages.Admin
             }
 
             _context.SaveChanges();
+
+            LogHelper.Log(
+                _context,
+                HttpContext,
+                adminId,
+                "EDIT_SERVICE",
+                $"Admin updated service {existing.service_id} | Name: {existing.name}"
+            );
 
             return RedirectToPage("ManageServices");
         }

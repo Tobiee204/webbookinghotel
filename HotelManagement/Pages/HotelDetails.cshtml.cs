@@ -3,6 +3,7 @@ using HotelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using HotelManagement.Helpers;
 
 namespace HotelManagement.Pages
 {
@@ -58,6 +59,14 @@ namespace HotelManagement.Pages
 
             if (user.banned_until != null && user.banned_until > DateTime.Now)
             {
+                LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    userId,
+                    "BLOCKED_REPLY",
+                    $"User {userId} tried to reply but is banned until {user.banned_until}"
+                );
+
                 TempData["BanMessage"] =
                     $"You are banned until {user.banned_until:dd/MM/yyyy}. Reason: {user.ban_reason}";
 
@@ -66,6 +75,14 @@ namespace HotelManagement.Pages
 
             _context.ReviewReplies.Add(reply);
             _context.SaveChanges();
+
+            LogHelper.Log(
+                _context,
+                HttpContext,
+                userId,
+                "ADD_REPLY",
+                $"User {userId} replied to review {reviewId} | RoomId: {id}"
+            );
 
             return RedirectToPage(new { id });
         }
@@ -90,7 +107,15 @@ namespace HotelManagement.Pages
 
             if (user.banned_until != null && user.banned_until > DateTime.Now)
             {
-                    TempData["BanMessage"] =
+                LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    userId,
+                    "BLOCKED_REVIEW",
+                    $"User {userId} tried to review but is banned until {user.banned_until}"
+                );
+
+                TempData["BanMessage"] =
                         $"You are banned until {user.banned_until:dd/MM/yyyy}. Reason: {user.ban_reason}";
 
                 return RedirectToPage(new { id });
@@ -100,14 +125,22 @@ namespace HotelManagement.Pages
             _context.Reviews.Add(review);
             _context.SaveChanges();
 
+            LogHelper.Log(
+                _context,
+                HttpContext,
+                userId,
+                "ADD_REVIEW",
+                $"User {userId} reviewed room {id} | Rating: {Rating}"
+            );
+
             return RedirectToPage(new { id });
         }
 
         public void OnGet(int id, int? star)
         {
             RoomImages = _context.RoomImages
-    .Where(i => i.room_id == id)
-    .ToList();
+                .Where(i => i.room_id == id)
+                .ToList();
 
             Room = _context.Rooms
                 .FirstOrDefault(r => r.room_id == id && r.is_active == true);
@@ -214,6 +247,15 @@ namespace HotelManagement.Pages
             }
 
             _context.SaveChanges();
+
+            LogHelper.Log(
+                _context,
+                HttpContext,
+                userId,
+                "LIKE_REVIEW",
+                $"User {userId} liked/unliked review {reviewId}"
+            );
+
             return new JsonResult(new { success = true });
         }
 
@@ -252,6 +294,15 @@ namespace HotelManagement.Pages
             }
 
             _context.SaveChanges();
+
+            LogHelper.Log(
+                _context,
+                HttpContext,
+                userId,
+                "DISLIKE_REVIEW",
+                $"User {userId} disliked/undisliked review {reviewId}"
+            );
+
             return new JsonResult(new { success = true });
         }
 
@@ -295,6 +346,14 @@ namespace HotelManagement.Pages
             }
 
             _context.SaveChanges();
+
+            LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    userId,
+                    "LIKE_REPLY",
+                    $"User {userId} liked/unliked reply {replyId}"
+                );
 
             return new JsonResult(new
             {
@@ -344,6 +403,14 @@ namespace HotelManagement.Pages
             }
 
             _context.SaveChanges();
+
+            LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    userId,
+                    "DISLIKE_REPLY",
+                    $"User {userId} disliked/undisliked reply {replyId}"
+                );
 
             return new JsonResult(new
             {

@@ -3,6 +3,8 @@ using HotelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using HotelManagement.Helpers;
+
 
 namespace HotelManagement.Pages.Admin
 {
@@ -34,16 +36,23 @@ namespace HotelManagement.Pages.Admin
 
         public IActionResult OnPostUpdateStatus(int id, string status, string reason, string customReason)
         {
+            var adminId = HttpContext.Session.GetInt32("UserId");
+
             var booking = _context.Bookings.FirstOrDefault(b => b.booking_id == id);
 
             if (booking != null)
             {
+                string oldStatus = booking.status;
+
                 booking.status = status;
+
+                string finalReason = "";
 
                 // ?? l?u lý do
                 if (status == "cancelled")
                 {
-                    booking.cancel_reason = reason == "Lý do khác" ? customReason : reason;
+                    finalReason = reason == "Lý do khác" ? customReason : reason;
+                    booking.cancel_reason = finalReason;
                 }
 
                 var room = _context.Rooms.FirstOrDefault(r => r.room_id == booking.room_id);
@@ -58,6 +67,16 @@ namespace HotelManagement.Pages.Admin
                 }
 
                 _context.SaveChanges();
+
+                LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    adminId,
+                    "UPDATE_BOOKING_STATUS",
+                    $"Admin updated booking {id} | From: {oldStatus} -> {status} | RoomId: {booking.room_id}" +
+                    (status == "cancelled" ? $" | Reason: {finalReason}" : "")
+                );
+
             }
 
             return RedirectToPage();
