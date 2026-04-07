@@ -19,6 +19,7 @@
             <th>Status</th>
             <th>Payment</th>
 			<th>Total</th>
+            <th>Cancel Reason</th>
         </tr>
     </thead>
     <tbody>
@@ -58,17 +59,31 @@
                         <span class="badge bg-danger">Not Paid</span>
                     }
                 </td>
-
                 <td>
-                    @if (b.Payment != null)
+                    @if (b.status == "cancelled" || b.Payment == null)
                     {
-                        <span class="text-success fw-bold">
-                            @b.Payment.amount.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ
+                        <span class="text-muted fw-bold">
+                            @((b.final_price ?? 0).ToString("N0")) VNĐ
                         </span>
                     }
                     else
                     {
-                        <span class="text-muted">0 VNĐ</span>
+                        <span class="text-success fw-bold">
+                            @((b.final_price ?? 0).ToString("N0")) VNĐ
+                        </span>
+                    }
+                </td>
+
+                <td>
+                    @if (b.status == "cancelled")
+                    {
+                        <span class="text-danger fw-bold">
+                            @(string.IsNullOrEmpty(b.cancel_reason) ? "No reason" : b.cancel_reason)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
                     }
                 </td>
             </tr>

@@ -1,0 +1,177 @@
+﻿@page
+@model HotelManagement.Pages.ServicesModel
+@{
+}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content text-center">
+        <h1>Luxury Services</h1>
+        <p>Experience the best at Angel Hotel</p>
+    </div>
+</section>
+
+<!-- MAIN -->
+<section class="container-fluid px-5 py-5">
+
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Explore Our Services</h2>
+        <p class="text-muted">Premium experiences designed for your comfort</p>
+    </div>
+
+    <div class="row g-4">
+
+        @foreach (var s in Model.Services)
+        {
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card" onclick="toggleCard(this)">
+
+                    <img src="@(string.IsNullOrEmpty(s.image) ? "/images/no-image.png" : s.image)">
+
+                    <div class="overlay">
+                        <h5>@s.name</h5>
+                        <p>@s.description</p>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+
+</section>
+
+<style>
+    /* ===== GLOBAL ===== */
+    body {
+        background: #ffffff;
+        color: #1f2937; /* chữ chung tối */
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+        height: 350px;
+        background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945') center/cover no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4); /* overlay nhẹ để chữ trắng nổi */
+        }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        color: #ffffff; /* chữ hero trắng */
+    }
+
+    /* TEXT */
+    .text-center h2 {
+        color: #1f2937; /* chữ tiêu đề Explore Our Services */
+    }
+
+    .text-center p {
+        color: #4b5563; /* chữ mô tả */
+    }
+
+    /* ===== CARD ===== */
+    .service-card {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        height: 300px;
+        transition: 0.4s;
+        background: #f9fafb; /* nền card sáng */
+    }
+
+        .service-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    /* OVERLAY */
+    .overlay {
+        position: absolute;
+        inset: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        color: #ffffff; /* chữ overlay vẫn trắng */
+    }
+
+        .overlay p {
+            opacity: 0;
+            transform: translateY(20px);
+            max-height: 0;
+            overflow: hidden;
+            transition: 0.5s;
+        }
+
+    /* ACTIVE */
+    .service-card.active {
+        transform: scale(1.05);
+        z-index: 10;
+    }
+
+        .service-card.active .overlay p {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+    /* HOVER EFFECT */
+    .service-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 0 30px rgba(197,157,95,0.3);
+    }
+
+        .service-card:hover img {
+            transform: scale(1.1);
+            transition: 0.6s;
+        }
+
+    /* GOLD BORDER */
+    .service-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 20px;
+        border: 2px solid transparent;
+    }
+
+    .service-card:hover::after {
+        border: 2px solid #c59d5f;
+    }
+
+    /* SCROLL */
+    .overlay p::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .overlay p::-webkit-scrollbar-thumb {
+        background: #c59d5f;
+        border-radius: 10px;
+    }
+
+</style>
+
+<script>
+    function toggleCard(card) {
+        document.querySelectorAll('.service-card').forEach(c => {
+            if (c !== card) c.classList.remove("active");
+        });
+        card.classList.toggle("active");
+    }
+</script>

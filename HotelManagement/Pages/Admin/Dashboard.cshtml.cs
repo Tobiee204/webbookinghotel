@@ -21,13 +21,19 @@ namespace HotelManagement.Pages.Admin
 
         public List<Booking> RecentBookings { get; set; }
 
+
         public void OnGet()
         {
-            TotalRooms = _context.Rooms.Count();
+            TotalRooms = _context.Rooms
+                    .Where(r => r.is_active == true)
+                    .Count();
             TotalUsers = _context.Users.Count();
             TotalBookings = _context.Bookings.Count();
 
-            TotalRevenue = _context.Payments.Sum(p => (decimal?)p.amount) ?? 0;
+            TotalRevenue = _context.Bookings
+                .Where(b => b.status == "confirmed" && b.Payment != null)
+                .Sum(b => (decimal?)b.final_price) ?? 0;
+
 
             RecentBookings = _context.Bookings
                 .Include(b => b.User)

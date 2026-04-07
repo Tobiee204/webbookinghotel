@@ -11,8 +11,8 @@
         height: 100%;
         background: rgba(0,0,0,0.6);
         display: flex;
-        justify-content: center; /* 👈 căn ngang */
-        align-items: center; /* 👈 căn dọc */
+        justify-content: center;
+        align-items: center;
         z-index: 999;
     }
 
@@ -21,6 +21,22 @@
         padding: 30px;
         border-radius: 10px;
         width: 350px;
+    }
+
+    .otp-inputs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .otp {
+        width: 45px;
+        height: 50px;
+        text-align: center;
+        font-size: 22px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
     }
 </style>
 
@@ -151,6 +167,7 @@
             <th>Check-in</th>
             <th>Check-out</th>
             <th>Status</th>
+            <th>Reason / Action</th>
         </tr>
 
         @foreach (var b in Model.Bookings)
@@ -173,6 +190,36 @@
                         <span class="badge bg-danger">@b.Status</span>
                     }
                 </td>
+                <td>
+                    @if (b.Status == "cancelled" && !string.IsNullOrEmpty(b.CancelReason))
+                    {
+                        <span class="text-danger fw-bold">
+                            @b.CancelReason
+                        </span>
+                    }
+                    else if (b.Status == "pending")
+                    {
+                        <form method="post" asp-page-handler="CancelBooking">
+                            <input type="hidden" name="id" value="@b.Id" />
+
+                            <select name="reason" class="form-select form-select-sm mb-1">
+                                <option value="No longer needed">No longer needed</option>
+                                <option value="Booked by mistake">Booked by mistake</option>
+                                <option value="Other">Other</option>
+                            </select>
+
+                            <input name="customReason" class="form-control form-control-sm mb-1"
+                                   placeholder="Enter reason..." />
+
+                            <button class="btn btn-danger btn-sm">Cancel</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </td>
+
             </tr>
         }
     </table>

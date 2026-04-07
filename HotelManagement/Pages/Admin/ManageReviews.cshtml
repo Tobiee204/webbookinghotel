@@ -1,0 +1,169 @@
+﻿@page
+@model HotelManagement.Pages.Admin.ManageReviewsModel
+
+<h2>Manage Reviews</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Room</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model.Rooms)
+        {
+            <tr>
+                <td>@r.title</td>
+                <td>
+                    <a href="/Admin/ManageReviews?roomId=@r.room_id"
+                       class="btn btn-primary btn-sm">
+                        View Reviews
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.RoomId != null && Model.Reviews != null)
+{
+    <h3 class="mt-4">Reviews</h3>
+@foreach (var r in Model.Reviews)
+{
+    <div class="border p-3 mb-3 rounded shadow-sm">
+
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+                <b>@r.User.name</b> ⭐ @r.rating
+                <br />
+                <small class="text-muted">
+                    👍 @r.likes | 👎 @r.dislikes
+                </small>
+            </div>
+
+            <!-- ACTION RIGHT -->
+            <div class="d-flex align-items-center gap-2">
+
+                <!-- DELETE -->
+                <form method="post">
+                    <button asp-page-handler="Delete"
+                            asp-route-id="@r.review_id"
+                            class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </form>
+
+                <!-- BAN / UNBAN -->
+                @if (r.User.banned_until != null && r.User.banned_until > DateTime.Now)
+                {
+                    <!-- UNBAN -->
+                    <form method="post">
+                        <input type="hidden" name="userId" value="@r.user_id" />
+                        <button asp-page-handler="Unban"
+                                class="btn btn-success btn-sm">
+                            Unban
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <!-- BAN -->
+                        <form method="post" class="d-flex gap-1">
+                            <input type="hidden" name="userId" value="@r.user_id" />
+
+                            <input type="date" name="banUntil" class="form-control form-control-sm" required />
+
+                            <!-- ✅ THÊM DÒNG NÀY -->
+                            <input type="text" name="banReason"
+                                   placeholder="Reason..."
+                                   class="form-control form-control-sm" required />
+
+                            <button asp-page-handler="Ban"
+                                    class="btn btn-warning btn-sm">
+                                Ban
+                            </button>
+                        </form>
+                }
+
+            </div>
+        </div>
+
+        <!-- COMMENT -->
+        <p class="mt-2">@r.comment</p>
+
+        <!-- BAN STATUS -->
+        @if (r.User.banned_until != null && r.User.banned_until > DateTime.Now)
+        {
+            <span class="badge bg-danger">
+                Banned until @r.User.banned_until.Value.ToString("dd/MM/yyyy")
+            </span>
+        }
+
+        <!-- REPLIES -->
+        @foreach (var rep in r.Replies)
+        {
+            <div class="ms-4 mt-3 p-2 border-start">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+                        ↳ <b>@rep.User.name</b>: @rep.comment
+                    </div>
+
+                    <!-- ACTION RIGHT FOR REPLY -->
+                    <div class="d-flex gap-2">
+
+                        <!-- DELETE REPLY -->
+                        <form method="post">
+                            <button asp-page-handler="DeleteReply"
+                                    asp-route-id="@rep.reply_id"
+                                    class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+
+                        <!-- BAN / UNBAN -->
+                        @if (rep.User.banned_until != null && rep.User.banned_until > DateTime.Now)
+                        {
+                            <form method="post">
+                                <input type="hidden" name="userId" value="@rep.user_id" />
+                                <button asp-page-handler="Unban"
+                                        class="btn btn-success btn-sm">
+                                    Unban
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                                <form method="post" class="d-flex gap-1">
+                                    <input type="hidden" name="userId" value="@rep.user_id" />
+
+                                    <input type="date" name="banUntil" class="form-control form-control-sm" required />
+
+                                    <!-- ✅ THÊM DÒNG NÀY -->
+                                    <input type="text" name="banReason"
+                                           placeholder="Reason..."
+                                           class="form-control form-control-sm" required />
+
+                                    <button asp-page-handler="Ban"
+                                            class="btn btn-warning btn-sm">
+                                        Ban
+                                    </button>
+                                </form>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
+    </div>
+    }
+}
+
+
+

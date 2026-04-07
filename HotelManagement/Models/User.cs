@@ -27,6 +27,12 @@ namespace HotelManagement.Models
 
         public DateTime? created_at { get; set; }
 
+        public string role { get; set; } = "user";
+
+        public bool is_active { get; set; } = true;
+        public DateTime? banned_until { get; set; }
+        public string? ban_reason { get; set; }
+
         public List<Booking> Bookings { get; set; }
     }
 }

@@ -1,0 +1,13 @@
+﻿@page "{id:int}"
+@model ApplyDiscountModel
+
+<h3>Apply Discount</h3>
+
+<form method="post">
+    <input type="hidden" asp-for="Room.room_id" />
+
+    <label>Discount (%)</label>
+    <input asp-for="Room.discount_percent" class="form-control" />
+
+    <button class="btn btn-success mt-2">Apply</button>
+</form>

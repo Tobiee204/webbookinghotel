@@ -2,6 +2,7 @@ using HotelManagement.Data;
 using HotelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using HotelManagement.Helpers;
 
 namespace HotelManagement.Pages
 {
@@ -49,6 +50,10 @@ namespace HotelManagement.Pages
                 _context.Payments.Add(payment);
 
                 _context.SaveChanges();
+
+                // ? LOG PAYMENT
+                var userId = HttpContext.Session.GetInt32("UserId");
+                LogHelper.Log(_context, HttpContext, userId, "PAYMENT", $"Payment success for booking ID {bookingId}");
             }
 
             return Page();

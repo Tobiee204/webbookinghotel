@@ -14,10 +14,14 @@ namespace HotelManagement.Pages
         }
 
         public List<Room> Rooms { get; set; }
+        public Dictionary<int, double> AvgRating { get; set; }
+        public List<int> HotRooms { get; set; }
 
         public void OnGet(string status, string room)
         {
-            var query = _context.Rooms.AsQueryable();
+            var query = _context.Rooms
+            .Where(r => r.is_active == true)
+            .AsQueryable();
 
             // FILTER STATUS
             if (!string.IsNullOrEmpty(status) && status != "all")
@@ -34,6 +38,20 @@ namespace HotelManagement.Pages
                     r.title.ToLower().Contains(room) ||
                     r.room_type.ToLower().Contains(room));
             }
+
+            AvgRating = _context.Reviews
+                    .Where(r => r.is_deleted != true)
+                    .GroupBy(r => r.room_id)
+                    .ToDictionary(
+                    g => g.Key,
+                    g => g.Average(x => x.rating)
+    );
+
+            HotRooms = AvgRating
+                .OrderByDescending(x => x.Value)
+                .Take(3)
+                .Select(x => x.Key)
+                .ToList();
 
             Rooms = query.ToList();
         }

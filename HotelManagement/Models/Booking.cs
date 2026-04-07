@@ -19,6 +19,11 @@ namespace HotelManagement.Models
         public DateTime check_out { get; set; }
         public string status { get; set; }
 
+        public string? cancel_reason { get; set; }
+
+        public decimal? total_price { get; set; }
+        public decimal? final_price { get; set; }
+
         public Payment? Payment { get; set; }
     }
 }

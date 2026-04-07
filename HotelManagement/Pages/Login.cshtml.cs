@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net;
 using System.Net.Mail;
 using System.Linq;
+using HotelManagement.Helpers;
 
 namespace HotelManagement.Pages
 {
@@ -47,6 +48,12 @@ namespace HotelManagement.Pages
             var user = _context.Users
                 .FirstOrDefault(u => u.email.ToLower() == Email.ToLower());
 
+            if (user != null && !user.is_active)
+            {
+                ModelState.AddModelError("Email", "Account has been disabled!");
+                return Page();
+            }
+
             if (user == null)
             {
                 ModelState.AddModelError("Email", "Email does not exist");
@@ -58,6 +65,9 @@ namespace HotelManagement.Pages
 
             if (result == PasswordVerificationResult.Failed)
             {
+                // LOG FAIL LOGIN
+                LogHelper.Log(_context, HttpContext, user.user_id, "LOGIN_FAIL", "Wrong password");
+
                 ModelState.AddModelError("Password", "Wrong password");
                 return Page();
             }
@@ -66,8 +76,18 @@ namespace HotelManagement.Pages
             HttpContext.Session.SetString("UserName", user.name);
             HttpContext.Session.SetInt32("UserId", user.user_id);
             HttpContext.Session.SetString("Avatar", user.avatar ?? "");
+            HttpContext.Session.SetString("Role", user.role);
 
-            return RedirectToPage("/Index");
+            LogHelper.Log(_context, HttpContext, user.user_id, "LOGIN", "User logged in");
+
+            if (user.role == "admin")
+            {
+                return RedirectToPage("/Admin/Dashboard"); // ? admin vào ?ây
+            }
+            else
+            {
+                return RedirectToPage("/Index"); // user th??ng
+            }
         }
 
         // ===== SEND OTP =====
@@ -133,6 +153,9 @@ namespace HotelManagement.Pages
             user.password = hasher.HashPassword(user, newPass);
 
             _context.SaveChanges();
+
+            // ? LOG RESET PASSWORD
+            LogHelper.Log(_context, HttpContext, user.user_id, "RESET_PASSWORD", "User reset password via OTP");
 
             return new JsonResult("done");
         }

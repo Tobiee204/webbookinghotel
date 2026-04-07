@@ -1,0 +1,50 @@
+﻿
+@model HotelManagement.Models.ReviewReply
+
+<div class="ms-4 mt-2 border-start ps-3">
+
+    <div class="d-flex align-items-center mb-1">
+
+        <img src="@(string.IsNullOrEmpty(Model.User?.avatar) ? "/images/default-avatar.png" : Model.User.avatar)"
+             style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:8px;" />
+
+        <b>@Model.User?.name</b>
+
+    </div>
+    <p>@Model?.comment</p>
+
+    @{
+        var userId = Context.Session.GetInt32("UserId");
+        var reaction = Model.Reactions?.FirstOrDefault(x => x.user_id == userId);
+    }
+
+    <button type="button"
+            onclick="likeReply(@Model.reply_id)"
+            class="btn btn-sm @(reaction?.is_like == true ? "btn-success" : "btn-outline-success")">
+        👍 @Model.likes
+    </button>
+
+    <button type="button"
+            onclick="dislikeReply(@Model.reply_id)"
+            class="btn btn-sm @(reaction?.is_like == false ? "btn-danger" : "btn-outline-danger")">
+        👎 @Model.dislikes
+    </button>
+
+    <!-- Reply button -->
+    <button class="btn btn-sm btn-outline-primary"
+            onclick="showReplyBox(@Model.review_id, @Model.reply_id)">
+        Reply
+    </button>
+
+    <div id="replyBox-@Model.reply_id"></div>
+
+    <!-- CHILD REPLIES (đệ quy) -->
+    @if (Model?.ChildReplies != null && Model.ChildReplies.Any())
+    {
+        foreach (var child in Model.ChildReplies)
+        {
+            @Html.Partial("_ReplyPartial", child)
+        }
+    }
+
+</div>

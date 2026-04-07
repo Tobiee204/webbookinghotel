@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net;
 using System.Net.Mail;
+using HotelManagement.Helpers;
 
 
 namespace HotelManagement.Pages
@@ -40,16 +41,20 @@ namespace HotelManagement.Pages
             }
 
             Bookings = _context.Bookings
-                .Where(b => b.user_id == userId)
+                .Where(b => b.user_id == userId && b.status.ToLower() != "unpaid")
                 .Join(_context.Rooms,
                       b => b.room_id,
                       r => r.room_id,
                       (b, r) => new BookingViewModel
                       {
+                          Id = b.booking_id,
+
                           RoomTitle = r.title,
                           CheckIn = b.check_in,
                           CheckOut = b.check_out,
-                          Status = b.status
+                          Status = b.status,
+
+                          CancelReason = b.cancel_reason
                       }).ToList();
         }
 
@@ -90,6 +95,9 @@ namespace HotelManagement.Pages
             user.password = hasher.HashPassword(user, password);
 
             _context.SaveChanges();
+
+            // ? LOG CHANGE PASSWORD
+            LogHelper.Log(_context, HttpContext, userId, "CHANGE_PASSWORD", "User changed password");
 
             return RedirectToPage();
         }
@@ -136,6 +144,9 @@ namespace HotelManagement.Pages
             user.password = hasher.HashPassword(user, newPass);
 
             _context.SaveChanges();
+
+            // ? LOG CHANGE PASSWORD (OTP)
+            LogHelper.Log(_context, HttpContext, userId, "CHANGE_PASSWORD", "User changed password via OTP");
 
             return Content("done");
         }
@@ -190,6 +201,44 @@ namespace HotelManagement.Pages
             }
 
             HttpContext.Session.SetString("Avatar", user.avatar);
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostCancelBooking(int id, string reason, string customReason)
+        {
+            var booking = _context.Bookings.FirstOrDefault(b => b.booking_id == id);
+
+            if (booking == null)
+                return RedirectToPage();
+
+            // ? x? lý reason ?úng cách
+            string finalReason = (reason == "Other" && !string.IsNullOrEmpty(customReason))
+                ? customReason
+                : reason;
+
+            booking.cancel_reason = finalReason;
+            booking.status = "cancelled";
+
+            // update room
+            var room = _context.Rooms.FirstOrDefault(r => r.room_id == booking.room_id);
+            if (room != null)
+            {
+                room.status = "Available";
+            }
+
+            _context.SaveChanges();
+
+            // LOG
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            LogHelper.Log(
+                _context,
+                HttpContext,
+                userId,
+                "CANCEL_BOOKING",
+                $"User cancelled booking {id} | RoomId: {booking.room_id} | Reason: {finalReason}"
+            );
 
             return RedirectToPage();
         }

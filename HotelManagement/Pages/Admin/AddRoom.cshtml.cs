@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using HotelManagement.Data;
 using HotelManagement.Models;
+using HotelManagement.Helpers;
 
 namespace HotelManagement.Pages.Admin
 {
@@ -20,7 +21,10 @@ namespace HotelManagement.Pages.Admin
         public Room Room { get; set; }
 
         [BindProperty]
-        public IFormFile Upload { get; set; }
+        public IFormFile MainImage { get; set; }
+
+        [BindProperty]
+        public List<IFormFile> Uploads { get; set; }
 
         [TempData]
         public string SuccessMessage { get; set; }
@@ -65,25 +69,50 @@ namespace HotelManagement.Pages.Admin
                 return Page();
             }
 
-            if (Upload != null)
+            // SAVE ROOM FIRST
+            _context.Rooms.Add(Room);
+            _context.SaveChanges();
+
+            // ?? MAIN IMAGE ? l?u vào Room.image
+            if (MainImage != null)
             {
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(Upload.FileName);
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(MainImage.FileName);
                 string path = Path.Combine(_env.WebRootPath, "images", fileName);
 
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    Upload.CopyTo(stream);
+                    MainImage.CopyTo(stream);
                 }
 
                 Room.image = "/images/" + fileName;
             }
-            else
+
+            // ?? SUB IMAGES
+            if (Uploads != null && Uploads.Count > 0)
             {
-                Room.image = "/images/default.jpg";
+                foreach (var file in Uploads)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string path = Path.Combine(_env.WebRootPath, "images", fileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    _context.RoomImages.Add(new RoomImage
+                    {
+                        room_id = Room.room_id,
+                        image_url = "/images/" + fileName,
+                    });
+                }
             }
 
-            _context.Rooms.Add(Room);
             _context.SaveChanges();
+
+            // ? LOG ADD ROOM
+            var adminId = HttpContext.Session.GetInt32("UserId");
+            LogHelper.Log(_context, HttpContext, adminId, "ADD_ROOM", $"Added room: {Room.title}");
 
             SuccessMessage = "? Room added successfully!";
 

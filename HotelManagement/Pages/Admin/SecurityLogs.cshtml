@@ -1,0 +1,56 @@
+﻿@page
+@model HotelManagement.Pages.Admin.SecurityLogsModel
+
+<h3>Security Logs</h3>
+
+<form method="get" class="mb-3">
+    <input type="text" name="search" value="@Model.Search"
+           placeholder="Search..." class="form-control mb-2" />
+
+    <label>From:</label>
+    <input type="date" name="fromDate"
+           value="@(Model.FromDate?.ToString("yyyy-MM-dd"))"
+           class="form-control mb-2" />
+
+    <label>To:</label>
+    <input type="date" name="toDate"
+           value="@(Model.ToDate?.ToString("yyyy-MM-dd"))"
+           class="form-control mb-2" />
+
+    <button class="btn btn-primary">Filter</button>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Action</th>
+            <th>Description</th>
+            <th>IP</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Logs.Any())
+        {
+            foreach (var log in Model.Logs)
+            {
+                <tr>
+                    <td>@(log.User?.name ?? "Guest")</td>
+                    <td>@log.action</td>
+                    <td>@log.description</td>
+                    <td>@log.ip_address</td>
+                    <td>@log.created_at.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No logs found
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

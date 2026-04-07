@@ -3,8 +3,11 @@ using HotelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text.Json;
+using HotelManagement.Helpers;
+
 
 namespace HotelManagement.Pages
 {
@@ -28,6 +31,11 @@ namespace HotelManagement.Pages
         [BindProperty]
         public int Guests { get; set; }
 
+        [BindProperty]
+        public int? SelectedOfferId { get; set; }
+
+        public List<UserOffer> UserOffers { get; set; } = new List<UserOffer>();
+
         private string SignSHA256(string message, string secretKey)
         {
             var key = Encoding.UTF8.GetBytes(secretKey);
@@ -41,10 +49,18 @@ namespace HotelManagement.Pages
 
         public IActionResult OnGet(int id)
         {
-            Room = _context.Rooms.FirstOrDefault(r => r.room_id == id);
+            Room = _context.Rooms
+                .FirstOrDefault(r => r.room_id == id && r.is_active == true);
 
-            if (Room == null)
-                return RedirectToPage("/Hotels");
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId != null)
+            {
+                UserOffers = _context.UserOffers
+                    .Where(u => u.user_id == userId && !u.is_used)
+                    .Include(u => u.Offer) // ?? FIX CHÍNH
+                    .ToList();
+            }
 
             return Page();
         }
@@ -69,7 +85,62 @@ namespace HotelManagement.Pages
 
             // ?? TÍNH TI?N
             int totalDays = (CheckOut - CheckIn).Days;
-            decimal totalPrice = Room.price * totalDays;
+            decimal totalPrice = Room.final_price * totalDays;
+
+            // ?? APPLY VOUCHER (CH?N)
+            decimal finalPrice = totalPrice;
+
+            if (SelectedOfferId.HasValue)
+            {
+                var offer = _context.Offers
+                    .FirstOrDefault(o => o.offer_id == SelectedOfferId.Value);
+
+                if (offer != null)
+                {
+                    bool valid = true;
+                    var now = DateTime.Now;
+
+                    // CONDITION
+                    if (offer.type == "condition")
+                    {
+                        if (offer.min_amount.HasValue && totalPrice < offer.min_amount.Value)
+                            valid = false;
+                    }
+
+                    // EVENT
+                    if (offer.type == "event")
+                    {
+                        if (offer.start_date > now || offer.end_date < now)
+                            valid = false;
+                    }
+
+                    if (valid)
+                    {
+                        if (offer.discount_type == "percent")
+                        {
+                            finalPrice -= totalPrice * offer.discount_value / 100;
+                        }
+                        else
+                        {
+                            finalPrice -= offer.discount_value;
+                        }
+
+                        // ?? MARK USED
+                        var userOffer = _context.UserOffers.FirstOrDefault(x =>
+                            x.offer_id == SelectedOfferId.Value &&
+                            x.user_id == userId &&
+                            !x.is_used);
+
+                        if (userOffer != null)
+                        {
+                            userOffer.is_used = true;
+                        }
+                    }
+                }
+            }
+
+            // ?? FIX âm ti?n
+            if (finalPrice < 0) finalPrice = 0;
 
             // ?? L?U BOOKING LUÔN
             var booking = new Booking
@@ -78,11 +149,16 @@ namespace HotelManagement.Pages
                 room_id = id,
                 check_in = CheckIn,
                 check_out = CheckOut,
-                status = "unpaid" // ch?a thanh toán
+                status = "unpaid",
+                total_price = totalPrice,
+                final_price = finalPrice
             };
 
             _context.Bookings.Add(booking);
             _context.SaveChanges();
+
+            // ? LOG BOOKING
+            LogHelper.Log(_context, HttpContext, userId, "BOOKING", $"Booked room ID {id}");
 
             // ?? dùng booking_id làm orderId
             string orderId = booking.booking_id + "_" + DateTime.Now.Ticks;
@@ -95,7 +171,7 @@ namespace HotelManagement.Pages
 
             string requestId = Guid.NewGuid().ToString();
 
-            string amount = ((int)totalPrice).ToString();
+            string amount = ((int)finalPrice).ToString();
             string orderInfo = "Booking Room " + Room.title;
 
             string extraData = booking.booking_id.ToString();

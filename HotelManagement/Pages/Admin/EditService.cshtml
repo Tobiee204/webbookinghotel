@@ -1,0 +1,54 @@
+﻿@page
+@model HotelManagement.Pages.Admin.EditServiceModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container py-5">
+
+    <div class="card shadow-lg p-4">
+
+        <h3 class="mb-4 text-center">Edit Service</h3>
+
+        <form method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Service.service_id" />
+
+            <!-- NAME -->
+            <div class="mb-3">
+                <label>Service Name</label>
+                <input asp-for="Service.name" class="form-control">
+                <span asp-validation-for="Service.name" class="text-danger"></span>
+            </div>
+
+            <!-- CURRENT IMAGE -->
+            <div class="mb-3 text-center">
+                <img src="@Model.Service.image"
+                     style="max-width:200px; border-radius:10px;" />
+            </div>
+
+            <!-- CHANGE IMAGE -->
+            <div class="mb-3">
+                <label>Change Image</label>
+                <input type="file" name="Upload" class="form-control">
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="mb-3">
+                <label>Description</label>
+                <textarea asp-for="Service.description"
+                          class="form-control"
+                          rows="4"></textarea>
+                <span asp-validation-for="Service.description" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Update Service
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

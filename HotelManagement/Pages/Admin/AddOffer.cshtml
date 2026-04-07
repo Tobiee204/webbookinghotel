@@ -1,0 +1,85 @@
+﻿@page
+@model HotelManagement.Pages.Admin.AddOfferModel
+
+<h2>Add Special Offer</h2>
+
+<form method="post">
+
+    <!-- CODE -->
+    <div class="mb-3">
+        <label>Code</label>
+        <input asp-for="Offer.code" class="form-control" placeholder="VD: SALE20" />
+    </div>
+
+    <!-- DISCOUNT -->
+    <div class="mb-3">
+        <label>Discount Value</label>
+        <input asp-for="Offer.discount_value" type="number" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Discount Type</label>
+        <select asp-for="Offer.discount_type" class="form-select">
+            <option value="percent">%</option>
+            <option value="amount">VNĐ</option>
+        </select>
+    </div>
+
+    <!-- TYPE -->
+    <div class="mb-3">
+        <label>Offer Type</label>
+        <select asp-for="Offer.type" class="form-select" id="offerType">
+            <option value="condition">Condition</option>
+            <option value="event">Event</option>
+        </select>
+    </div>
+
+    <!-- CONDITION -->
+    <div class="mb-3" id="conditionBox">
+        <label>Minimum Amount</label>
+        <input asp-for="Offer.min_amount" type="number" class="form-control" />
+    </div>
+
+    <!-- EVENT -->
+    <div id="eventBox">
+        <div class="mb-3">
+            <label>Start Date</label>
+            <input asp-for="Offer.start_date" type="datetime-local" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>End Date</label>
+            <input asp-for="Offer.end_date" type="datetime-local" class="form-control" />
+        </div>
+    </div>
+
+    <!-- ACTIVE -->
+    <div class="mb-3">
+        <label>Status</label>
+        <select asp-for="Offer.is_active" class="form-select">
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Add Offer</button>
+</form>
+
+@section Scripts {
+    <script>
+        function toggleFields() {
+            var type = document.getElementById("offerType").value;
+
+            document.getElementById("conditionBox").style.display =
+                (type === "condition") ? "block" : "none";
+
+            document.getElementById("eventBox").style.display =
+                (type === "event") ? "block" : "none";
+        }
+
+        document.getElementById("offerType").addEventListener("change", toggleFields);
+
+        // chạy lần đầu
+        toggleFields();
+    </script>
+}

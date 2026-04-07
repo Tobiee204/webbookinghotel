@@ -7,6 +7,7 @@ using System.Net;
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
+using HotelManagement.Helpers;
 
 namespace HotelManagement.Pages
 {
@@ -49,6 +50,9 @@ namespace HotelManagement.Pages
 
                 _context.Users.Add(user);
                 _context.SaveChanges();
+
+                // LOG REGISTER
+                LogHelper.Log(_context, HttpContext, user.user_id, "REGISTER", "New user registered");
 
                 TempData["Success"] = "Registration successful!";
                 TempData["ShowPopup"] = "success";

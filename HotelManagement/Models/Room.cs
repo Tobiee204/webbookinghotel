@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HotelManagement.Models
 {
@@ -33,5 +34,24 @@ namespace HotelManagement.Models
         public string status { get; set; }
 
         public string? image { get; set; }
+
+        public bool is_active { get; set; } = true;
+
+        public string room_category { get; set; } = "Normal"; // VIP / Normal
+
+        public int discount_percent { get; set; } = 0;
+
+        [NotMapped]
+        public decimal final_price
+        {
+            get
+            {
+                if (discount_percent > 0)
+                {
+                    return price - (price * discount_percent / 100);
+                }
+                return price;
+            }
+        }
     }
 }

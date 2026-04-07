@@ -45,9 +45,11 @@
                     <th>ID</th>
                     <th>Title</th>
                     <th>Room Type</th>
-                    <th>Price</th>
                     <th>Status</th>
+                    <th>Category</th>
+                    <th>Price</th>
                     <th width="150">Action</th>
+                    <th>Active</th>
                 </tr>
 
             </thead>
@@ -60,7 +62,6 @@
                         <td>@r.room_id</td>
                         <td>@r.title</td>
                         <td>@r.room_type</td>
-                        <td>@r.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ</td>
 
                         <td>
                             @if (r.status == "Available")
@@ -74,6 +75,34 @@
                         </td>
 
                         <td>
+                            @if (r.room_category == "VIP")
+                            {
+                                <span class="badge bg-warning text-dark">VIP</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Normal</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (r.discount_percent > 0)
+                            {
+                                <span class="text-danger text-decoration-line-through">
+                                    @r.price.ToString("N0") VNĐ
+                                </span>
+                                <br />
+                                <span class="text-success fw-bold">
+                                    @r.final_price.ToString("N0") VNĐ (-@r.discount_percent%)
+                                </span>
+                            }
+                            else
+                            {
+                                @($"{r.price:N0} VNĐ")
+                                                }
+                        </td>
+
+                        <td>
 
                             <!-- EDIT -->
                             <a asp-page="/Admin/EditRoom" asp-route-id="@r.room_id"
@@ -81,19 +110,20 @@
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            <!-- DELETE -->
-                            <form method="post"
-                                  asp-page-handler="Delete"
-                                  asp-route-id="@r.room_id"
-                                  style="display:inline">
+                            <a asp-page="/Admin/ApplyDiscount"
+                               asp-route-id="@r.room_id"
+                               class="btn btn-info btn-sm">
+                                %
+                            </a>
 
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="return confirmDelete('@r.status')">
-                                    <i class="fas fa-trash"></i>
+                        </td>
+
+                        <td>
+                            <form method="post" asp-page-handler="Toggle" asp-route-id="@r.room_id">
+                                <button class="btn btn-sm @(r.is_active ? "btn-success" : "btn-secondary")">
+                                    @(r.is_active ? "ON" : "OFF")
                                 </button>
-
                             </form>
-
                         </td>
 
                     </tr>

@@ -1,0 +1,97 @@
+﻿@page
+@model HotelManagement.Pages.Admin.AddServiceModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container py-5">
+
+    <div class="card shadow-lg p-4">
+
+        <h3 class="mb-4 text-center">Add New Service</h3>
+
+        <form method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <!-- SUCCESS -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success text-center">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+
+            <!-- ERROR -->
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger text-center">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+
+            <!-- NAME -->
+            <div class="mb-3">
+                <label>Service Name</label>
+                <input asp-for="Service.name" class="form-control" placeholder="Swimming Pool">
+                <span asp-validation-for="Service.name" class="text-danger"></span>
+            </div>
+
+            <!-- IMAGE UPLOAD -->
+            <div class="mb-3">
+                <label>Service Image</label>
+                <input type="file" name="Upload" class="form-control">
+                <span asp-validation-for="Upload" class="text-danger"></span>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="mb-3">
+                <label>Description</label>
+                <textarea asp-for="Service.description"
+                          class="form-control"
+                          rows="4"
+                          placeholder="Describe the service..."></textarea>
+                <span asp-validation-for="Service.description" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">
+                Add Service
+            </button>
+
+            <!-- VALIDATION ERROR LIST -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="card border-danger mt-3">
+                    <div class="card-header bg-danger text-white">
+                        ⚠️ Validation Errors
+                    </div>
+                    <div class="card-body">
+                        <ul class="mb-0">
+                            @foreach (var state in ViewData.ModelState.Values)
+                            {
+                                foreach (var err in state.Errors)
+                                {
+                                    <li class="text-danger">@err.ErrorMessage</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+
+        </form>
+
+        <!-- AUTO HIDE ALERT -->
+        <script>
+            setTimeout(() => {
+                let alert = document.querySelector(".alert");
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s";
+                    alert.style.opacity = "0";
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 3000);
+        </script>
+
+    </div>
+
+</div>

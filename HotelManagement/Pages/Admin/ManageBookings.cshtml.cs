@@ -32,13 +32,19 @@ namespace HotelManagement.Pages.Admin
             Bookings = query.ToList();
         }
 
-        public IActionResult OnPostUpdateStatus(int id, string status)
+        public IActionResult OnPostUpdateStatus(int id, string status, string reason, string customReason)
         {
             var booking = _context.Bookings.FirstOrDefault(b => b.booking_id == id);
 
             if (booking != null)
             {
                 booking.status = status;
+
+                // ?? l?u lý do
+                if (status == "cancelled")
+                {
+                    booking.cancel_reason = reason == "Lý do khác" ? customReason : reason;
+                }
 
                 var room = _context.Rooms.FirstOrDefault(r => r.room_id == booking.room_id);
 
@@ -48,7 +54,7 @@ namespace HotelManagement.Pages.Admin
                         room.status = "booked";
 
                     if (status == "cancelled")
-                        room.status = "available";
+                        room.status = "Available";
                 }
 
                 _context.SaveChanges();

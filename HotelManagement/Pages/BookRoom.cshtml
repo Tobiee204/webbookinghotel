@@ -70,6 +70,25 @@
                             </select>
                         </div>
 
+                            <div class="col-md-12">
+                                <label class="form-label">Choose Voucher</label>
+
+                                <select asp-for="SelectedOfferId" class="form-select">
+                                    <option value="">-- Select Voucher --</option>
+
+                                    @foreach (var v in Model.UserOffers)
+                                    {
+                                        if (v.Offer != null)
+                                        {
+                                            <option value="@v.offer_id">
+                                                @v.Offer.code
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                       
+
                         <div class="col-12">
                             <h5>
                                 Total Price:
@@ -95,22 +114,60 @@
 </section>
 
 <script>
+    const offers = [
+        @foreach (var v in Model.UserOffers)
+        {
+                if (v.Offer != null)
+                {
+                        <text>
+                        {
+                            id: @v.offer_id,
+                            type: "@v.Offer.discount_type",
+                            value: @v.Offer.discount_value,
+                            min: @(v.Offer.min_amount ?? 0)
+                        },
+                        </text>
+                }
+        }
+    ];
+</script>
+
+<script>
     function calculateTotal() {
         let checkIn = new Date(document.querySelector("[name='CheckIn']").value);
         let checkOut = new Date(document.querySelector("[name='CheckOut']").value);
+        let selectedId = document.querySelector("[name='SelectedOfferId']").value;
 
         if (!checkIn || !checkOut) return;
 
         let days = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
+        let price = @Model.Room.final_price;
 
-        let price = @Model.Room.price;
+        if (days <= 0) return;
 
-        if (days > 0) {
-            document.getElementById("totalPrice").innerText =
-                (days * price).toLocaleString('vi-VN') + " VNĐ";
+        let total = days * price;
+        let final = total;
+
+        // 👉 APPLY VOUCHER
+        let offer = offers.find(o => o.id == selectedId);
+
+        if (offer) {
+            if (total >= offer.min) {
+                if (offer.type === "percent") {
+                    final -= total * offer.value / 100;
+                } else {
+                    final -= offer.value;
+                }
+            }
         }
+
+        if (final < 0) final = 0;
+
+        document.getElementById("totalPrice").innerText =
+            final.toLocaleString('vi-VN') + " VNĐ";
     }
 
     document.querySelector("[name='CheckIn']").addEventListener("change", calculateTotal);
     document.querySelector("[name='CheckOut']").addEventListener("change", calculateTotal);
+    document.querySelector("[name='SelectedOfferId']").addEventListener("change", calculateTotal);
 </script>

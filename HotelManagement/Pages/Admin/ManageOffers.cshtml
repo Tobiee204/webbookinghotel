@@ -1,0 +1,88 @@
+﻿@page
+@model HotelManagement.Pages.Admin.ManageOffersModel
+
+<h2>Manage Special Offers</h2>
+
+<a asp-page="/Admin/AddOffer" class="btn btn-primary mb-3">+ Add Offer</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Code</th>
+            <th>Discount</th>
+            <th>Type</th>
+            <th>Condition / Time</th>
+            <th>Status</th>
+            <th width="150">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var o in Model.Offers)
+        {
+            <tr>
+                <!-- CODE -->
+                <td>@o.code</td>
+
+                <!-- DISCOUNT -->
+                <td>
+                    @if (o.discount_type == "percent")
+                    {
+                        @($"{o.discount_value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))} VNĐ")
+                    }
+                    else
+                    {
+                        <span>
+                            Min: @o.min_amount?.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ
+                        </span>
+                    }
+                </td>
+
+                <!-- TYPE -->
+                <td>@o.type</td>
+
+                <!-- CONDITION / EVENT -->
+                <td>
+                    @if (o.type == "condition")
+                    {
+                        <p>
+                            Min: @o.min_amount?.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ
+                        </p>
+                    }
+                    else
+                    {
+                        <span>
+                            @o.start_date?.ToString("dd/MM/yyyy")
+                            -
+                            @o.end_date?.ToString("dd/MM/yyyy")
+                        </span>
+                    }
+                </td>
+
+                <!-- STATUS -->
+                <td>
+                    @if (o.is_active)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Off</span>
+                    }
+                </td>
+
+                <!-- ACTION -->
+                <td>
+                    <a asp-page="EditOffer" asp-route-id="@o.offer_id" class="btn btn-sm btn-warning">Edit</a>
+
+                    <a asp-page-handler="Delete"
+                       asp-route-id="@o.offer_id"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Are you sure to delete this offer?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -65,7 +65,21 @@
                                 <form method="post" asp-page-handler="UpdateStatus">
                                     <input type="hidden" name="id" value="@b.booking_id" />
                                     <button name="status" value="confirmed" class="btn btn-success btn-sm">Confirm</button>
-                                    <button name="status" value="cancelled" class="btn btn-danger btn-sm">Cancel</button>
+                                    <div class="mt-1">
+                                        <select name="reason" class="form-select form-select-sm mb-1">
+                                            <option value="The room is under maintenance.">The room is under maintenance.</option>
+                                            <option value="The customer requested a cancellation.">The customer requested a cancellation.</option>
+                                            <option value="Other reasons">Other reasons</option>
+                                        </select>
+
+                                        <input name="customReason" class="form-control form-control-sm mb-1"
+                                               placeholder="Enter another reason..." />
+
+                                        <button name="status" value="cancelled"
+                                                class="btn btn-danger btn-sm">
+                                            Cancel
+                                        </button>
+									</div>
                                 </form>
                             }
                             else

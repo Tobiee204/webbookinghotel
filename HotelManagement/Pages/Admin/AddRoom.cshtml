@@ -77,6 +77,14 @@
 				<span asp-validation-for="Room.facilities" class="text-danger"></span>
             </div>
 
+            <div class="mb-3">
+                <label>Room Category</label>
+                <select asp-for="Room.room_category" class="form-control">
+                    <option>Normal</option>
+                    <option>VIP</option>
+                </select>
+            </div>
+
             <!-- Status -->
             <div class="mb-3">
                 <label>Status</label>
@@ -88,11 +96,16 @@
 				<span asp-validation-for="Room.status" class="text-danger"></span>
             </div>
 
-            <!-- Image -->
+            <!-- MAIN IMAGE -->
             <div class="mb-3">
-                <label>Room Image</label>
-                <input type="file" name="Upload" class="form-control">
-				<span asp-validation-for="Upload" class="text-danger"></span>
+                <label>Main Image</label>
+                <input type="file" name="MainImage" class="form-control">
+            </div>
+
+            <!-- SUB IMAGES -->
+            <div class="mb-3">
+                <label>Sub Images</label>
+                <input type="file" name="Uploads" multiple class="form-control">
             </div>
 
             <button type="submit" class="btn btn-primary w-100" onclick="console.log('CLICKED')">

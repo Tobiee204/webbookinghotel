@@ -38,6 +38,25 @@ app.UseSession();
 
 app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path.Value;
+
+    // N?u truy c?p vào /Admin
+    if (path.StartsWith("/Admin"))
+    {
+        var role = context.Session.GetString("Role");
+
+        if (role != "admin")
+        {
+            context.Response.Redirect("/Login");
+            return;
+        }
+    }
+
+    await next();
+});
+
 app.MapRazorPages();
 
 app.Run();

@@ -1,0 +1,61 @@
+﻿@model List<HotelManagement.Models.Review>
+
+@foreach (var r in Model)
+{
+    <div class="border p-3 mt-3">
+        <div class="d-flex align-items-center mb-2">
+
+            <img src="@(string.IsNullOrEmpty(r.User?.avatar) ? "/images/default-avatar.png" : r.User.avatar)"
+                 style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:10px;" />
+
+            <b>@r.User?.name</b> - ⭐ @r.rating
+
+        </div>
+
+        <p>@r.comment</p>
+
+        @{
+            var userId = Context.Session.GetInt32("UserId");
+            var userReaction = r.Reactions?.FirstOrDefault(x => x.user_id == userId);
+        }
+
+        <button type="button"
+                onclick="likeReview(@r.review_id)"
+                class="btn btn-sm @(userReaction?.is_like == true ? "btn-success" : "btn-outline-success")">
+            👍 @r.likes
+        </button>
+
+        <button type="button"
+                onclick="dislikeReview(@r.review_id)"
+                class="btn btn-sm @(userReaction?.is_like == false ? "btn-danger" : "btn-outline-danger")">
+            👎 @r.dislikes
+        </button>
+
+        <button class="btn btn-sm btn-outline-primary mt-2"
+                onclick="showReplyBox(@r.review_id, null)">
+            Reply
+        </button>
+
+        <div id="replyBox-@r.review_id"></div>
+
+        @{
+            var rootReplies = r.Replies.Where(x => x.parent_reply_id == null).ToList();
+        }
+
+        @if (rootReplies.Any())
+        {
+            <button class="btn btn-sm btn-link text-primary p-0"
+                    onclick="toggleReplies(@r.review_id)">
+                Show replies (@rootReplies.Count)
+            </button>
+
+            <div id="replies-@r.review_id" style="display:none;">
+                @foreach (var rep in rootReplies)
+                {
+                    @Html.Partial("_ReplyPartial", rep)
+                }
+            </div>
+        }
+
+    </div>
+}

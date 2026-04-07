@@ -57,6 +57,14 @@
                 <input asp-for="Room.facilities" class="form-control">
             </div>
 
+            <div class="mb-3">
+                <label>Room Category</label>
+                <select asp-for="Room.room_category" class="form-control">
+                    <option>Normal</option>
+                    <option>VIP</option>
+                </select>
+            </div>
+
             <!-- Status -->
             <div class="mb-3">
                 <label>Status</label>
@@ -69,8 +77,13 @@
 
             <!-- Image -->
             <div class="mb-3">
-                <label>Room Image</label>
-                <input type="file" name="Upload" class="form-control">
+                <label>Main Image</label>
+                <input type="file" name="MainImage" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label>Add More Images</label>
+                <input type="file" name="Uploads" multiple class="form-control">
             </div>
 
             <button type="submit" class="btn btn-primary w-100">

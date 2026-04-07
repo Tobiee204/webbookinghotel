@@ -1,0 +1,63 @@
+﻿@page
+@model HotelManagement.Pages.SpecialOfferModel
+<h2>🎁 Special Offers</h2>
+
+<div class="row">
+    @foreach (var o in Model.Offers)
+    {
+        var isValid = Model.IsValid(o);
+        var isClaimed = Model.UserOffers.Any(u => u.offer_id == o.offer_id);
+
+        <div class="col-md-4 mb-3">
+            <div class="card p-3 @(isValid ? "" : "bg-light text-muted")">
+
+                <h5>@o.code</h5>
+
+                <p>
+                    @if (o.discount_type == "percent")
+                    {
+                        <b>@o.discount_value % OFF</b>
+                    }
+                    else
+                    {
+                        <b>
+                            @o.discount_value.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ OFF
+                        </b>
+                    }
+                </p>
+
+                @if (o.type == "condition")
+                {
+                    <p>
+                        Min: @o.min_amount?.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ
+                    </p>
+                }
+                else
+                {
+                    <p>
+                        @o.start_date?.ToString("dd/MM/yyyy")
+                        -
+                        @o.end_date?.ToString("dd/MM/yyyy")
+                    </p>
+                }
+
+                @if (!isValid)
+                {
+                    <button class="btn btn-secondary" disabled>Not eligible</button>
+                }
+                else if (isClaimed)
+                {
+                    <button class="btn btn-success" disabled>Claimed</button>
+                }
+                else
+                {
+                    <form method="post">
+                        <input type="hidden" name="offerId" value="@o.offer_id" />
+                        <button class="btn btn-primary">Nhận</button>
+                    </form>
+                }
+
+            </div>
+        </div>
+    }
+</div>

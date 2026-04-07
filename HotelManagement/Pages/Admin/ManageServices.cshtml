@@ -1,0 +1,66 @@
+﻿@page
+@model HotelManagement.Pages.Admin.ManageServicesModel
+
+<h2>Manage Services</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<a href="/Admin/AddService" class="btn btn-primary mb-3">
+    Add New Service
+</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var s in Model.Services)
+        {
+            <tr>
+                <td>@s.name</td>
+                <td>
+                    <img src="@s.image" width="100" />
+                </td>
+                <td>
+                    <a href="/Admin/EditService?id=@s.service_id"
+                       class="btn btn-warning btn-sm">
+                        Edit
+                    </a>
+
+                    <form method="post" style="display:inline;"
+                          onsubmit="return confirm('Are you sure you want to delete this service?');">
+
+                        <button asp-page-handler="Delete"
+                                asp-route-id="@s.service_id"
+                                class="btn btn-danger btn-sm">
+                            Delete
+                        </button>
+
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+    setTimeout(() => {
+        let alert = document.querySelector(".alert");
+        if (alert) {
+            alert.style.transition = "opacity 0.5s";
+            alert.style.opacity = "0";
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+</script>

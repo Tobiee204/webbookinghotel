@@ -1,6 +1,30 @@
 ﻿@page
 @model HotelManagement.Pages.HotelsModel
 
+<style>
+
+    .room-card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+    .card-img-top {
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .text-warning span {
+        font-size: 20px;
+    }
+
+</style>
+
 <section class="container py-5">
 
     <h2 class="text-center mb-5">Rooms</h2>
@@ -38,17 +62,58 @@
             <div class="col-md-4">
                 <div class="card room-card shadow">
 
+                    @if (Model.HotRooms.Contains(r.room_id))
+                    {
+                        <span class="badge bg-danger position-absolute" style="top:10px; left:10px;">
+                            HOT
+                        </span>
+                    }
+
                     <img src="@(string.IsNullOrEmpty(r.image) ? "/images/default.jpg" : r.image)"
                          class="card-img-top">
 
                     <div class="card-body text-center">
 
-                        <h5>@r.title</h5>
+                        <h5>
+                            @r.title
+
+                            @if (r.room_category == "VIP")
+                            {
+                                <span class="badge bg-warning text-dark ms-2">
+                                    VIP
+                                </span>
+                            }
+                        </h5>
                         <p class="text-muted">@r.room_type</p>
 
-                        <p class="text-primary fw-bold">
-                            @r.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ
-                        </p>
+
+                        @if (r.discount_percent > 0)
+                        {
+                            <div class="position-relative">
+
+                                <!-- BADGE -20% -->
+                                <span class="badge bg-danger"
+                                      style="position:absolute; top:-10px; right:-10px;">
+                                    -@r.discount_percent%
+                                </span>
+
+                                <p>
+                                    <span class="text-danger text-decoration-line-through">
+                                        @r.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
+                                    </span><br />
+
+                                    <span class="text-success fw-bold">
+                                        @r.final_price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
+                                    </span>
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-primary fw-bold">
+                                @r.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
+                            </p>
+                        }
 
                         <p>
                             Status:
@@ -65,6 +130,39 @@
                                 <span class="badge bg-danger">@r.status</span>
                             }
                         </p>
+
+                        @{
+                            double rating = Model.AvgRating.ContainsKey(r.room_id)
+                            ? Model.AvgRating[r.room_id]
+                            : 0;
+
+                            var fullStars = (int)Math.Floor(rating);
+                            var hasHalfStar = (rating - fullStars) >= 0.5;
+                            var emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                        }
+
+                        <div class="text-warning">
+
+                            @for (int i = 0; i < fullStars; i++)
+                            {
+                                <span>★</span>
+                            }
+
+                            @if (hasHalfStar)
+                            {
+                                <span>⯨</span>
+                            }
+
+                            @for (int i = 0; i < emptyStars; i++)
+                            {
+                                <span>☆</span>
+                            }
+
+                            <span class="ms-1 text-dark">
+                                (@(rating == 0 ? "0" : rating.ToString("0.0")))
+                            </span>
+
+                        </div>
 
                         <p>
                             👤 @r.guests guests | 🛏 @r.bed_type
@@ -83,23 +181,3 @@
 
 </section>
 
-
-<style>
-
-    .room-card {
-        border: none;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-
-        .room-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-        }
-
-    .card-img-top {
-        height: 220px;
-        object-fit: cover;
-    }
-
-</style>

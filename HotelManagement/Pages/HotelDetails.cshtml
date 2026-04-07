@@ -1,5 +1,20 @@
 ﻿@page "{id:int}"
 @model HotelManagement.Pages.HotelDetailsModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<input type="hidden" id="RequestVerificationToken"
+       value="@Antiforgery.GetAndStoreTokens(HttpContext).RequestToken" />
+
+<style>
+    .star {
+        color: #ccc;
+        transition: 0.2s;
+    }
+
+        .star.active {
+            color: gold;
+        }
+</style>
 
 <section class="container py-5">
 
@@ -8,27 +23,114 @@
         <!-- Room Image -->
         <div class="col-md-6">
 
-            <img src="@(string.IsNullOrEmpty(Model.Room.image) ? "/images/default.jpg" : Model.Room.image)"
-                 class="img-fluid rounded shadow">
+            <div class="position-relative">
+
+                <img id="mainImage"
+                     src="@(Model.Room.image
+                                  ?? Model.RoomImages.FirstOrDefault()?.image_url
+                                  ?? "/images/default.jpg")"
+                     class="img-fluid rounded shadow"
+                     style="height:400px; object-fit:cover; width:100%;">
+
+                <!-- BUTTON LEFT -->
+                <button class="btn btn-dark position-absolute top-50 start-0 translate-middle-y"
+                        onclick="prevImage()">
+                    ❮
+                </button>
+
+                <!-- BUTTON RIGHT -->
+                <button class="btn btn-dark position-absolute top-50 end-0 translate-middle-y"
+                        onclick="nextImage()">
+                    ❯
+                </button>
+
+            </div>
+
+            <!-- THUMBNAILS -->
+            <div class="d-flex mt-3 gap-2">
+                @foreach (var img in Model.RoomImages)
+                {
+                    <img src="@img.image_url"
+                         class="rounded"
+                         style="width:80px; height:60px; object-fit:cover; cursor:pointer;"
+                         onclick="selectImage('@img.image_url')">
+                }
+            </div>
 
         </div>
 
         <!-- Room Info -->
         <div class="col-md-6">
 
-            <h2>@Model.Room.title</h2>
+            <h2>
+                @Model.Room.title
+
+                @if (Model.Room.room_category == "VIP")
+                {
+                    <span class="badge bg-warning text-dark ms-2">VIP</span>
+                }
+            </h2>
 
             <p class="text-muted">
                 @Model.Room.room_type
             </p>
 
-            <h4 class="text-primary">
-                @Model.Room.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
-            </h4>
+            @if (Model.Room.discount_percent > 0)
+            {
+                <span class="badge bg-danger mb-2">
+                    -@Model.Room.discount_percent%
+                </span>
+
+                <h4>
+                    <span class="text-danger text-decoration-line-through">
+                        @Model.Room.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
+                    </span><br />
+
+                    <span class="text-success">
+                        @Model.Room.final_price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
+                    </span>
+                </h4>
+            }
+            else
+            {
+                <h4 class="text-primary">
+                    @Model.Room.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
+                </h4>
+            }
 
             <p class="mt-3">
                 @Model.Room.description
             </p>
+
+            <!--REVIEW-->
+            <div class="text-warning fs-4">
+                @{
+                    double rating = Model.AvgStar;
+                    int fullStars = (int)Math.Floor(rating);
+                    bool hasHalfStar = (rating - fullStars) >= 0.5;
+                    int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                }
+
+                @for (int i = 0; i < fullStars; i++)
+                {
+                    <span>★</span>
+                }
+
+                @if (hasHalfStar)
+                {
+                    <span>⯨</span>
+                }
+
+                @for (int i = 0; i < emptyStars; i++)
+                {
+                    <span>☆</span>
+                }
+
+                <span class="ms-2 text-dark">
+                    (@Model.AvgStar.ToString("0.0"))
+                </span>
+            </div>
+
 
             <h5 class="mt-4">Room Facilities</h5>
 
@@ -57,3 +159,344 @@
     </div>
 
 </section>
+
+
+<!--FORM REVIEW-->
+<hr />
+
+@if (TempData["BanMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["BanMessage"]
+    </div>
+}
+
+<h4>Leave a Review</h4>
+
+<form method="post" asp-page-handler="Review">
+    <input type="hidden" name="id" value="@Model.Room.room_id" />
+
+    <div class="mb-3">
+        <label>Rating:</label>
+
+        <div id="starRating" style="font-size: 28px; cursor: pointer;">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <span class="star" data-value="@i">☆</span>
+            }
+        </div>
+
+        <input type="hidden" name="Rating" id="ratingValue" value="5" />
+    </div>
+
+    <textarea name="Comment" class="form-control mb-2" placeholder="Write comment..."></textarea>
+
+    <button class="btn btn-primary">Post</button>
+</form>
+
+<!--REVIEW-->
+<div class="mb-3">
+
+    <button class="btn btn-dark btn-sm"
+            onclick="filterReview(null)">
+        All
+    </button>
+
+    @for (int i = 1; i <= 5; i++)
+    {
+        <button class="btn btn-outline-warning btn-sm"
+                onclick="filterReview(@i)">
+            @i - @(i + 0.5) ⭐
+        </button>
+    }
+
+</div>
+    <div id="reviewContainer">
+        @Html.Partial("_ReviewListPartial", Model.Reviews)
+    </div>
+</div>
+
+<script>
+    const stars = document.querySelectorAll(".star");
+    const ratingInput = document.getElementById("ratingValue");
+
+    let currentRating = 5;
+
+    stars.forEach((star, index) => {
+
+        // hover
+        star.addEventListener("mousemove", function (e) {
+            const rect = this.getBoundingClientRect();
+            const isHalf = (e.clientX - rect.left) < rect.width / 2;
+
+            const value = index + (isHalf ? 0.5 : 1);
+
+            highlightStars(value);
+        });
+
+        // click
+        star.addEventListener("click", function (e) {
+            const rect = this.getBoundingClientRect();
+            const isHalf = (e.clientX - rect.left) < rect.width / 2;
+
+            currentRating = index + (isHalf ? 0.5 : 1);
+            ratingInput.value = currentRating;
+
+            highlightStars(currentRating);
+        });
+
+        // reset hover
+        star.addEventListener("mouseleave", function () {
+            highlightStars(currentRating);
+        });
+    });
+
+
+    function highlightStars(rating) {
+        stars.forEach((star, i) => {
+            const starIndex = i + 1;
+
+            if (rating >= starIndex) {
+                star.textContent = "★";
+                star.classList.add("active");
+            }
+            else if (rating >= starIndex - 0.5) {
+                star.textContent = "⯨";
+                star.classList.add("active");
+            }
+            else {
+                star.textContent = "☆";
+                star.classList.remove("active");
+            }
+        });
+    }
+
+
+    // init
+    highlightStars(currentRating);
+</script>
+
+<script>
+           function showReplyBox(reviewId, parentReplyId) {
+
+        let id = parentReplyId ?? reviewId;
+
+        let box = document.getElementById("replyBox-" + id);
+
+        box.innerHTML = `
+            <form method="post" action="/HotelDetails/${@Model.Room.room_id}?handler=Reply">
+
+                <input type="hidden" name="__RequestVerificationToken"
+                       value="${document.getElementById("RequestVerificationToken").value}" />
+
+                <input type="hidden" name="id" value="${@Model.Room.room_id}" />
+                <input type="hidden" name="reviewId" value="${reviewId}" />
+                <input type="hidden" name="parentReplyId" value="${parentReplyId ?? ''}" />
+
+                <input name="replyText" class="form-control mt-2" placeholder="Reply..." required />
+
+                <button class="btn btn-sm btn-primary mt-1">Send</button>
+            </form>
+        `;
+    }
+</script>
+
+<script>
+    function filterReview(star) {
+
+        let roomId = @Model.Room.room_id;
+
+        let url = `/HotelDetails/${roomId}?handler=Filter`;
+
+        if (star !== null) {
+            url += `&star=${star}`;
+        }
+
+        fetch(url)
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("reviewContainer").innerHTML = html;
+            })
+            .catch(err => console.error(err));
+    }
+</script>
+
+<script>
+    function toggleReplies(reviewId) {
+        let box = document.getElementById("replies-" + reviewId);
+
+        if (box.style.display === "none") {
+            box.style.display = "block";
+        } else {
+            box.style.display = "none";
+        }
+    }
+</script>
+
+<script>
+        function likeReply(replyId) {
+        let roomId = @Model.Room.room_id;
+        const token = document.getElementById("RequestVerificationToken").value;
+
+        fetch(`?handler=LikeReply&id=${roomId}&replyId=${replyId}`, {
+            method: "POST",
+            headers: {
+                "RequestVerificationToken": token
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.notLoggedIn) {
+                window.location.href = "/Login";
+                return;
+            }
+
+            const likeBtn = document.querySelector(`button[onclick="likeReply(${replyId})"]`);
+            const dislikeBtn = document.querySelector(`button[onclick="dislikeReply(${replyId})"]`);
+
+            if (!likeBtn || !dislikeBtn) return;
+
+            likeBtn.innerHTML = `👍 ${data.likes}`;
+            dislikeBtn.innerHTML = `👎 ${data.dislikes}`;
+
+            likeBtn.classList.toggle("btn-success", data.userReaction === true);
+            likeBtn.classList.toggle("btn-outline-success", data.userReaction !== true);
+
+            dislikeBtn.classList.toggle("btn-danger", data.userReaction === false);
+            dislikeBtn.classList.toggle("btn-outline-danger", data.userReaction !== false);
+        })
+        .catch(err => console.error(err)); // ✅ ĐÚNG
+    }
+
+    function dislikeReply(replyId) {
+        let roomId = @Model.Room.room_id;
+        const token = document.getElementById("RequestVerificationToken").value;
+
+        fetch(`?handler=DislikeReply&id=${roomId}&replyId=${replyId}`, { // ✅ SỬA Ở ĐÂY
+            method: "POST",
+            headers: {
+                "RequestVerificationToken": token
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.notLoggedIn) {
+                window.location.href = "/Login";
+                return;
+            }
+
+            const likeBtn = document.querySelector(`button[onclick="likeReply(${replyId})"]`);
+            const dislikeBtn = document.querySelector(`button[onclick="dislikeReply(${replyId})"]`);
+
+            if (!likeBtn || !dislikeBtn) return;
+
+            likeBtn.innerHTML = `👍 ${data.likes}`;
+            dislikeBtn.innerHTML = `👎 ${data.dislikes}`;
+
+            likeBtn.classList.toggle("btn-success", data.userReaction === true);
+            likeBtn.classList.toggle("btn-outline-success", data.userReaction !== true);
+
+            dislikeBtn.classList.toggle("btn-danger", data.userReaction === false);
+            dislikeBtn.classList.toggle("btn-outline-danger", data.userReaction !== false);
+        })
+        .catch(err => console.error(err));
+    }
+</script>
+
+<script>
+    function reloadReviews() {
+        let roomId = @Model.Room.room_id;
+
+        fetch(`/HotelDetails/${roomId}?handler=Filter`)
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("reviewContainer").innerHTML = html;
+            });
+    }
+</script>
+
+<script>
+    function likeReview(reviewId) {
+        let roomId = @Model.Room.room_id;
+        const token = document.getElementById("RequestVerificationToken").value;
+
+        fetch(`?handler=Like&id=${roomId}&reviewId=${reviewId}`, {
+            method: "POST",
+            headers: {
+                "RequestVerificationToken": token
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.notLoggedIn) {
+                window.location.href = "/Login"; // 🔥 redirect
+                return;
+            }
+
+            reloadReviews();
+        })
+        .catch(err => console.error(err));
+    }
+
+    function dislikeReview(reviewId) {
+        let roomId = @Model.Room.room_id;
+        const token = document.getElementById("RequestVerificationToken").value;
+
+        fetch(`?handler=Dislike&id=${roomId}&reviewId=${reviewId}`, {
+            method: "POST",
+            headers: {
+                "RequestVerificationToken": token
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.notLoggedIn) {
+                window.location.href = "/Login"; // 🔥 redirect
+                return;
+            }
+
+            reloadReviews();
+        })
+        .catch(err => console.error(err));
+    }
+</script>
+
+<!--UPLOAD ANH-->
+<script>
+    let images = [
+        "@Model.Room.image",
+        @foreach (var img in Model.RoomImages)
+        {
+                @: "@img.image_url",
+        }
+    ];
+
+    let currentIndex = images.findIndex(img =>
+        img === "@Model.Room.image"
+    );
+
+    if (currentIndex === -1) currentIndex = 0;
+
+    function showImage(index) {
+        document.getElementById("mainImage").src = images[index];
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+    }
+
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+    }
+
+    function selectImage(src) {
+        document.getElementById("mainImage").src = src;
+        currentIndex = images.indexOf(src);
+    }
+</script>

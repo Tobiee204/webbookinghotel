@@ -26,6 +26,11 @@ namespace HotelManagement.Pages.Admin
 
         [BindProperty(SupportsGet = true)]
         public DateTime? ToDate { get; set; }
+        public decimal VipRevenue { get; set; }
+        public decimal NormalRevenue { get; set; }
+        public List<decimal> MonthlyRevenue { get; set; } = new List<decimal>();
+        [BindProperty(SupportsGet = true)]
+        public int? Year { get; set; }
 
         public void OnGet()
         {
@@ -37,20 +42,52 @@ namespace HotelManagement.Pages.Admin
             if (ToDate.HasValue)
                 bookings = bookings.Where(b => b.check_in <= ToDate.Value);
 
-            TotalRooms = _context.Rooms.Count();
+            TotalRooms = _context.Rooms
+                .Where(r => r.is_active == true)
+                .Count();
             TotalUsers = _context.Users.Count();
 
-            BookedRooms = bookings.Count(b => b.status == "Booked");
+            BookedRooms = _context.Rooms
+                .Count(r => r.status == "Booked" && r.is_active == true);
+
             CancelledBookings = bookings.Count(b => b.status == "Cancelled");
 
-            AvailableRooms = TotalRooms - BookedRooms;
+            AvailableRooms = _context.Rooms
+                .Count(r => r.status == "Available" && r.is_active == true);
 
             TotalReviews = _context.Reviews.Count();
 
-            TotalRevenue = _context.Payments
-                .Where(p => !FromDate.HasValue || p.payment_date >= FromDate)
-                .Where(p => !ToDate.HasValue || p.payment_date <= ToDate)
-                .Sum(p => (decimal?)p.amount) ?? 0;
+            TotalRevenue = bookings
+                .Where(b => b.status == "confirmed" && b.Payment != null)
+                .Sum(b => (decimal?)b.final_price) ?? 0;
+
+            VipRevenue = bookings
+                .Where(b => b.Room.room_category == "VIP"
+                         && b.status == "confirmed"
+                         && b.Payment != null)
+                .Sum(b => (decimal?)b.final_price) ?? 0;
+
+            NormalRevenue = bookings
+                .Where(b => b.Room.room_category == "Normal"
+                         && b.status == "confirmed"
+                         && b.Payment != null)
+                .Sum(b => (decimal?)b.final_price) ?? 0;
+
+            int year = Year ?? DateTime.Now.Year;
+
+            MonthlyRevenue = new List<decimal>();
+
+            for (int month = 1; month <= 12; month++)
+            {
+                var revenue = _context.Bookings
+                    .Where(b => b.status == "confirmed"
+                             && b.Payment != null
+                             && b.check_in.Year == year
+                             && b.check_in.Month == month)
+                    .Sum(b => (decimal?)b.final_price) ?? 0;
+
+                MonthlyRevenue.Add(revenue);
+            }
         }
     }
 }

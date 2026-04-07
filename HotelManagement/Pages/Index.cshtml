@@ -90,6 +90,14 @@
 
                 <div class="card shadow">
 
+                    @if (Model.HotRooms.Contains(r.room_id))
+                    {
+                        <span class="badge bg-danger position-absolute"
+                              style="top:10px; left:10px;">
+                            HOT
+                        </span>
+                    }
+
                     <img src="@(string.IsNullOrEmpty(r.image) ? "/images/default.jpg" : r.image)" class="card-img-top">
 
                     <div class="card-body text-center">
@@ -101,6 +109,41 @@
                         <p class="card-text">
                             @(string.IsNullOrEmpty(r.description) ? "Nice and comfortable room." : r.description)
                         </p>
+
+                        <!--RATING-->
+
+                        @{
+                            double rating = Model.AvgRating.ContainsKey(r.room_id)
+                            ? Model.AvgRating[r.room_id]
+                            : 0;
+
+                            var fullStars = (int)Math.Floor(rating);
+                            var hasHalfStar = (rating - fullStars) >= 0.5;
+                            var emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                        }
+
+                        <div class="text-warning">
+
+                            @for (int i = 0; i < fullStars; i++)
+                            {
+                                <span>★</span>
+                            }
+
+                            @if (hasHalfStar)
+                            {
+                                <span>⯨</span>
+                            }
+
+                            @for (int i = 0; i < emptyStars; i++)
+                            {
+                                <span>☆</span>
+                            }
+
+                            <span class="ms-1 text-dark">
+                                (@(rating == 0 ? "0" : rating.ToString("0.0")))
+                            </span>
+
+                        </div>
 
                         <p class="fw-bold text-primary">
                             @r.price.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) VNĐ / day
@@ -128,79 +171,32 @@
 
     <div class="row text-center g-4">
 
-        <!-- Swimming Pool -->
-        <div class="col-md-3">
+        @foreach (var s in Model.Services)
+        {
+            <div class="col-md-3">
 
-            <div class="service-card shadow-sm p-4">
+                <div class="service-card shadow-sm p-4">
 
-                <img src="/images/SwimmingPool.png" class="card-img-top">
+                    <img src="@s.image" class="card-img-top">
 
-                <h4>🏊 Swimming Pool</h4>
+                    <h4>@s.name</h4>
 
-                <p>
-                    Enjoy our outdoor swimming pool with a relaxing atmosphere
-                    and beautiful city views.
-                </p>
+                    <p>@s.description</p>
 
-            </div>
-
-        </div>
-
-        <!-- Coffee Shop -->
-        <div class="col-md-3">
-
-            <div class="service-card shadow-sm p-4">
-
-                <img src="/images/CoffeShop.png" class="card-img-top">
-
-                <h4>☕ Coffee Shop</h4>
-
-                <p>
-                    Start your day with fresh coffee and delicious pastries
-                    at our cozy hotel café.
-                </p>
+                </div>
 
             </div>
-
-        </div>
-
-        <!-- Rooftop Bar -->
-        <div class="col-md-3">
-
-            <div class="service-card shadow-sm p-4">
-                <img src="/images/RooftopBar.png" class="card-img-top">
-
-                <h4>🍸 Rooftop Bar</h4>
-
-                <p>
-                    Relax with cocktails and music while enjoying a stunning
-                    rooftop city view.
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- Spa & Massage -->
-        <div class="col-md-3">
-
-            <div class="service-card shadow-sm p-4">
-				<img src="/images/SpaMassage.png" class="card-img-top">
-
-                <h4>💆 Spa & Massage</h4>
-
-                <p>
-                    Rejuvenate your body and mind with our professional
-                    spa and massage services.
-                </p>
-
-            </div>
-
-        </div>
+        }
 
     </div>
 
 </section>
+
+<div class="text-center mt-4">
+    <a href="/Service" class="btn btn-primary btn-lg">
+        View All Services
+    </a>
+</div>
 
 <!-- Customer Reviews -->
 
