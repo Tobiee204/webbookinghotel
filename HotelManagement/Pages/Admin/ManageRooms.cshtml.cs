@@ -19,8 +19,25 @@ namespace HotelManagement.Pages.Admin
 
         public void OnGet()
         {
-            Rooms = _context.Rooms
-            .ToList();
+            // ?? AUTO UPDATE STATUS
+            var today = DateTime.Today;
+
+            var rooms = _context.Rooms.ToList();
+
+            foreach (var room in rooms)
+            {
+                bool hasActiveBooking = _context.Bookings.Any(b =>
+                    b.room_id == room.room_id &&
+                    b.check_out > today &&
+                    b.status != "cancelled"
+                );
+
+                room.status = hasActiveBooking ? "Booked" : "Available";
+            }
+
+            _context.SaveChanges();
+
+            Rooms = rooms;
         }
 
         public IActionResult OnPostToggle(int id)

@@ -1,6 +1,16 @@
 ﻿@page "{id:int}"
 @model HotelManagement.Pages.BookRoomModel
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div id="alertBox" class="alert alert-danger text-center">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
 <section class="container py-5">
 
     <h2 class="text-center mb-5">Book Your Room</h2>
@@ -170,4 +180,18 @@
     document.querySelector("[name='CheckIn']").addEventListener("change", calculateTotal);
     document.querySelector("[name='CheckOut']").addEventListener("change", calculateTotal);
     document.querySelector("[name='SelectedOfferId']").addEventListener("change", calculateTotal);
+</script>
+
+<script>
+    setTimeout(function () {
+        var alertBox = document.getElementById("alertBox");
+        if (alertBox) {
+            alertBox.style.transition = "opacity 0.5s";
+            alertBox.style.opacity = "0";
+
+            setTimeout(() => {
+                alertBox.remove();
+            }, 500);
+        }
+    }, 3000);
 </script>

@@ -44,26 +44,29 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 999;
     }
 
     .otp-box {
         background: white;
         padding: 30px;
         border-radius: 10px;
-        text-align: center;
+        width: 350px;
     }
 
     .otp-inputs {
         display: flex;
-        gap: 10px;
         justify-content: center;
+        gap: 10px;
     }
 
     .otp {
-        width: 40px;
+        width: 45px;
         height: 50px;
         text-align: center;
-        font-size: 24px;
+        font-size: 22px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
     }
 </style>
 
@@ -157,12 +160,14 @@
     <div class="otp-overlay">
         <div class="otp-box">
 
-            <h4 class="text-center mb-3">Enter OTP</h4>
+            <h4 class="text-center mb-3">Verify OTP</h4>
 
-            <form method="post">
+            <form method="post" id="otpForm">
+                @Html.AntiForgeryToken()
+
                 <input type="hidden" name="action" value="verify" />
 
-                <div class="otp-inputs">
+                <div class="otp-inputs mb-3">
                     <input maxlength="1" class="otp" />
                     <input maxlength="1" class="otp" />
                     <input maxlength="1" class="otp" />
@@ -173,11 +178,21 @@
 
                 <input type="hidden" name="InputOTP" id="finalOTP" />
 
+                <div class="text-center mt-2">
+                    <button id="resendBtn" type="button" class="btn btn-secondary w-100" disabled>
+                        Resend OTP (60s)
+                    </button>
+                </div>
             </form>
+
+            <button onclick="closeOTP()" class="btn btn-secondary mt-2 w-100">
+                Close
+            </button>
 
         </div>
     </div>
 }
+
 
 <script>
     const images = [
@@ -225,10 +240,72 @@
 
             if (otp.length === 6) {
                 document.getElementById("finalOTP").value = otp;
-                input.form.submit();
+                document.getElementById("otpForm").submit();
             }
         });
     });
+
+    const resendBtn = document.getElementById("resendBtn");
+
+    if (resendBtn) {
+
+        let timeLeft = 60;
+        let countdown;
+
+        function startCountdown() {
+            clearInterval(countdown);
+
+                resendBtn.classList.remove("btn-success");
+                resendBtn.classList.add("btn-secondary");
+
+            countdown = setInterval(() => {
+                timeLeft--;
+                resendBtn.innerText = "Resend OTP (" + timeLeft + "s)";
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    resendBtn.disabled = false;
+                    resendBtn.innerText = "Resend OTP";
+
+                    resendBtn.classList.remove("btn-secondary");
+                    resendBtn.classList.add("btn-success");
+                }
+            }, 1000);
+        }
+
+        startCountdown();
+
+        resendBtn.addEventListener("click", function () {
+
+            resendBtn.disabled = true;
+            timeLeft = 60;
+
+            resendBtn.classList.remove("btn-success");
+            resendBtn.classList.add("btn-secondary");
+
+            fetch("/Register?handler=ResendOTP", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "RequestVerificationToken": getToken()
+                }
+            })
+            .then(() => console.log("OTP resent"))
+            .catch(err => console.error(err));
+
+            startCountdown();
+        });
+
+        function getToken() {
+            return document.querySelector('input[name="__RequestVerificationToken"]').value;
+        }
+    }
+
+
+        function closeOTP() {
+        window.location.href = "/Register";
+    }
 </script>
 
 @section Scripts {
@@ -243,12 +320,12 @@
             @if (TempData["ShowPopup"].ToString() == "success")
             {
                 <h4 class="text-success">Registration Successful!</h4>
-                <button onclick="goLogin()" class="btn btn-success mt-3">OK</button>
+                <button onclick="goLogin()" class="btn btn-success mt-3 w-100">OK</button>
             }
             else
             {
                 <h4 class="text-danger">Invalid OTP!</h4>
-                <button onclick="closePopup()" class="btn btn-danger mt-3">OK</button>
+                <button onclick="closePopup()" class="btn btn-danger mt-3 w-100">OK</button>
             }
 
         </div>

@@ -52,6 +52,9 @@ namespace HotelManagement.Pages
             Room = _context.Rooms
                 .FirstOrDefault(r => r.room_id == id && r.is_active == true);
 
+            CheckIn = DateTime.Today;
+            CheckOut = DateTime.Today.AddDays(1);
+
             var userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId != null)
@@ -77,9 +80,43 @@ namespace HotelManagement.Pages
             if (Room == null)
                 return RedirectToPage("/Hotels");
 
-            if (CheckIn >= CheckOut)
+            // ? Không cho ch?n ngày quá kh?
+            if (CheckIn < DateTime.Today)
+            {
+                ModelState.AddModelError("", "Check-in cannot be in the past");
+
+                // ?? LOAD L?I DATA
+                Room = _context.Rooms.FirstOrDefault(r => r.room_id == id);
+
+                var userIdReload = HttpContext.Session.GetInt32("UserId");
+                if (userIdReload != null)
+                {
+                    UserOffers = _context.UserOffers
+                        .Where(u => u.user_id == userIdReload && !u.is_used)
+                        .Include(u => u.Offer)
+                        .ToList();
+                }
+
+                return Page();
+            }
+
+            // ? Check-out ph?i l?n h?n check-in
+            if (CheckOut <= CheckIn)
             {
                 ModelState.AddModelError("", "Check-out must be after check-in");
+
+                // ?? LOAD L?I DATA
+                Room = _context.Rooms.FirstOrDefault(r => r.room_id == id);
+
+                var userIdReload = HttpContext.Session.GetInt32("UserId");
+                if (userIdReload != null)
+                {
+                    UserOffers = _context.UserOffers
+                        .Where(u => u.user_id == userIdReload && !u.is_used)
+                        .Include(u => u.Offer)
+                        .ToList();
+                }
+
                 return Page();
             }
 
