@@ -3,6 +3,7 @@ using HotelManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using HotelManagement.Helpers;
 
 namespace HotelManagement.Pages.Admin
 {
@@ -39,6 +40,8 @@ namespace HotelManagement.Pages.Admin
 
         public IActionResult OnPostBan(int userId, DateTime banUntil, string banReason)
         {
+            var adminId = HttpContext.Session.GetInt32("UserId");
+
             var user = _context.Users.Find(userId);
 
             if (user != null)
@@ -46,6 +49,14 @@ namespace HotelManagement.Pages.Admin
                 user.banned_until = banUntil;
                 user.ban_reason = banReason;
                 _context.SaveChanges();
+
+                LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    adminId,
+                    "BAN_USER",
+                    $"Admin banned user {userId} until {banUntil} | Reason: {banReason}"
+                    );
             }
 
             return RedirectToPage(new { roomId = Request.Query["roomId"] });
@@ -53,12 +64,22 @@ namespace HotelManagement.Pages.Admin
 
         public IActionResult OnPostUnban(int userId)
         {
+            var adminId = HttpContext.Session.GetInt32("UserId");
+
             var user = _context.Users.Find(userId);
 
             if (user != null)
             {
                 user.banned_until = null;
                 _context.SaveChanges();
+
+                LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    adminId,
+                    "UNBAN_USER",
+                    $"Admin unbanned user {userId}"
+                );
             }
 
             return RedirectToPage(new { roomId = Request.Query["roomId"] });
@@ -66,12 +87,22 @@ namespace HotelManagement.Pages.Admin
 
         public IActionResult OnPostDelete(int id)
         {
+            var adminId = HttpContext.Session.GetInt32("UserId");
+
             var r = _context.Reviews.Find(id);
 
             if (r != null)
             {
                 r.is_deleted = true; // soft delete
                 _context.SaveChanges();
+
+                LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    adminId,
+                    "DELETE_REVIEW",
+                    $"Admin deleted review {id} (UserId: {r.user_id}, RoomId: {r.room_id})"
+                );
             }
 
             return RedirectToPage();
@@ -79,12 +110,22 @@ namespace HotelManagement.Pages.Admin
 
         public IActionResult OnPostDeleteReply(int id)
         {
+            var adminId = HttpContext.Session.GetInt32("UserId");
+
             var reply = _context.ReviewReplies.Find(id);
 
             if (reply != null)
             {
-                reply.is_deleted = true; // ? soft delete
+                reply.is_deleted = true;
                 _context.SaveChanges();
+
+                LogHelper.Log(
+                    _context,
+                    HttpContext,
+                    adminId,
+                    "DELETE_REPLY",
+                    $"Admin deleted reply {id} (ReviewId: {reply.review_id}, UserId: {reply.user_id})"
+                );
             }
 
             return RedirectToPage(new { roomId = Request.Query["roomId"] });
