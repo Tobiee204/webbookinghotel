@@ -150,14 +150,17 @@ namespace HotelManagement.Pages
             }
 
             AvgStar = _context.Reviews
-    .Where(r => r.room_id == id && r.is_deleted != true)
-    .Any()
-    ? _context.Reviews
-        .Where(r => r.room_id == id && r.is_deleted != true)
-        .Average(r => r.rating)
-    : 0;
+                .Where(r => r.room_id == id && r.is_deleted != true)
+                .Any()
+                ? _context.Reviews
+                    .Where(r => r.room_id == id && r.is_deleted != true)
+                    .Average(r => r.rating)
+                : 0;
 
-            Reviews = query.ToList();
+            Reviews = query
+            .OrderByDescending(r => r.likes)
+            .ThenByDescending(r => r.created_at)
+            .ToList();
 
             foreach (var review in Reviews)
             {
@@ -374,7 +377,10 @@ namespace HotelManagement.Pages
                 query = query.Where(r => Math.Floor(r.rating) == star.Value);
             }
 
-            var reviews = query.ToList();
+            var reviews = query
+                .OrderByDescending(r => r.likes)
+                .ThenByDescending(r => r.created_at)
+                .ToList();
 
             foreach (var review in reviews)
             {

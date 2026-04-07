@@ -8,7 +8,14 @@
             <img src="@(string.IsNullOrEmpty(r.User?.avatar) ? "/images/default-avatar.png" : r.User.avatar)"
                  style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:10px;" />
 
-            <b>@r.User?.name</b> - ⭐ @r.rating
+            @using HotelManagement.Helpers
+
+                <b>@r.User?.name</b>
+                <small class="text-muted">
+                    • @TimeHelper.GetTimeAgo(r.created_at)
+                    (@r.created_at.ToString("dd/MM/yyyy"))
+                </small>
+                - ⭐ @r.rating
 
         </div>
 

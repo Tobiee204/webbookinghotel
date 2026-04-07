@@ -8,7 +8,13 @@
         <img src="@(string.IsNullOrEmpty(Model.User?.avatar) ? "/images/default-avatar.png" : Model.User.avatar)"
              style="width:30px; height:30px; border-radius:50%; object-fit:cover; margin-right:8px;" />
 
+        @using HotelManagement.Helpers
+
         <b>@Model.User?.name</b>
+        <small class="text-muted">
+            • @TimeHelper.GetTimeAgo(Model.created_at)
+            (@Model.created_at.ToString("dd/MM/yyyy"))
+        </small>
 
     </div>
     <p>@Model?.comment</p>
