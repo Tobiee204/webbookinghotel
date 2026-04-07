@@ -1,5 +1,6 @@
 ﻿@page
 @model HotelManagement.Pages.Admin.ManageReviewsModel
+@using HotelManagement.Helpers
 
 <h2>Manage Reviews</h2>
 
@@ -37,11 +38,18 @@
         <div class="d-flex justify-content-between align-items-center">
 
             <div>
-                <b>@r.User.name</b> ⭐ @r.rating
-                <br />
-                <small class="text-muted">
-                    👍 @r.likes | 👎 @r.dislikes
-                </small>
+                    <b>@r.User.name</b>
+                    <small class="text-muted">
+                        • @TimeHelper.GetTimeAgo(r.created_at)
+                        (@r.created_at.ToString("dd/MM/yyyy HH:mm"))
+                    </small>
+                    - ⭐ @r.rating
+
+                    <br />
+
+                    <small class="text-muted">
+                        👍 @r.likes | 👎 @r.dislikes
+                    </small>
             </div>
 
             <!-- ACTION RIGHT -->
@@ -111,6 +119,10 @@
 
                     <div>
                         ↳ <b>@rep.User.name</b>: @rep.comment
+                            <small class="text-muted">
+                                • @TimeHelper.GetTimeAgo(rep.created_at)
+                                (@rep.created_at.ToString("dd/MM/yyyy HH:mm"))
+                            </small>
                     </div>
 
                     <!-- ACTION RIGHT FOR REPLY -->
