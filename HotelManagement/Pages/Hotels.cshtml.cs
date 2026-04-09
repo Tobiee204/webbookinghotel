@@ -59,7 +59,11 @@ namespace HotelManagement.Pages
                 .Select(x => x.Key)
                 .ToList();
 
-            Rooms = query.ToList();
+            Rooms = query
+                .ToList()
+                .OrderByDescending(r => HotRooms.Contains(r.room_id))
+                .ThenByDescending(r => r.room_id)
+                .ToList();
         }
     }
 }

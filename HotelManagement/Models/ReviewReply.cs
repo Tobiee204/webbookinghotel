@@ -14,7 +14,7 @@ namespace HotelManagement.Models
         public string comment { get; set; }
         public int likes { get; set; } = 0;
         public int dislikes { get; set; } = 0;
-        public bool? is_deleted { get; set; }
+        public bool? is_deleted { get; set; } = false;
         public DateTime created_at { get; set; }
 
         [ForeignKey("review_id")]

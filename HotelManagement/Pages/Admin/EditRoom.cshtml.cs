@@ -120,7 +120,7 @@ namespace HotelManagement.Pages.Admin
                 $"Admin updated room {room.room_id} | Title: {room.title} | Price: {room.price} | Status: {room.status}"
             );
 
-            TempData["SuccessMessage"] = "Update room successfully!";
+            TempData["SuccessMessage"] = " ? Update room successfully!";
             return RedirectToPage("/Admin/ManageRooms");
         }
     }

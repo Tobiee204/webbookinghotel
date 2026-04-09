@@ -116,8 +116,8 @@ namespace HotelManagement.Pages.Admin
 
             SuccessMessage = "? Room added successfully!";
 
-            TempData["SuccessMessage"] = "Add room successfully!";
-            return Page();
+            TempData["SuccessMessage"] = " ? Add room successfully!";
+            return RedirectToPage();
         }
 
     }

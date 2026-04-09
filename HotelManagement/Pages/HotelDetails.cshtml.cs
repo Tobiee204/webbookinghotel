@@ -51,7 +51,8 @@ namespace HotelManagement.Pages
                 parent_reply_id = parentReplyId, // ?? quan tr?ng
                 user_id = userId.Value,
                 comment = replyText,
-                created_at = DateTime.Now
+                created_at = DateTime.Now,
+                is_deleted = false
             };
 
             //M?i thêm vào ?? làm Manage Review

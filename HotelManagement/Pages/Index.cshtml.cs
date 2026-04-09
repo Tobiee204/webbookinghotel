@@ -20,12 +20,6 @@ namespace HotelManagement.Pages
 
         public void OnGet()
         {
-            // ? CH? l?y room active
-            PopularRooms = _context.Rooms
-                .Where(r => r.status == "Available" && r.is_active == true)
-                .Take(3)
-                .ToList();
-
             // ? TÍNH RATING
             AvgRating = _context.Reviews
                 .Where(r => r.is_deleted != true)
@@ -35,11 +29,22 @@ namespace HotelManagement.Pages
                     g => g.Average(x => x.rating)
                 );
 
-            // ?? HOT ROOM (top rating)
+            // ?? L?Y TOP 3 HOT ROOM
             HotRooms = AvgRating
                 .OrderByDescending(x => x.Value)
                 .Take(3)
                 .Select(x => x.Key)
+                .ToList();
+
+            // ?? CH? L?Y 3 ROOM HOT
+            PopularRooms = _context.Rooms
+                .Where(r => HotRooms.Contains(r.room_id)
+                            && r.is_active == true)
+                .ToList();
+
+            // (optional) gi? ?úng th? t? HOT
+            PopularRooms = PopularRooms
+                .OrderByDescending(r => AvgRating[r.room_id])
                 .ToList();
 
             // ? SERVICES (l?y 4 cái)

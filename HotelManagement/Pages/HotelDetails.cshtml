@@ -131,6 +131,22 @@
                 </span>
             </div>
 
+            <p>
+                Status:
+                @if (Model.Room.status == "Available")
+                {
+                    <span class="badge bg-success">Available</span>
+                }
+                else if (Model.Room.status == "pending")
+                {
+                    <span class="badge bg-warning">Pending</span>
+                }
+                else if (Model.Room.status == "booked")
+                {
+                    <span class="badge bg-danger">Booked</span>
+                }
+            </p>
+
 
             <h5 class="mt-4">Room Facilities</h5>
 
