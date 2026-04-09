@@ -22,7 +22,7 @@ namespace HotelManagement.Pages.Admin
         public List<IFormFile> Uploads { get; set; }
 
         [BindProperty]
-        public IFormFile MainImage { get; set; }
+        public IFormFile? MainImage { get; set; }
 
         // LOAD DATA KHI M? TRANG EDIT
         public IActionResult OnGet(int id)
@@ -50,6 +50,12 @@ namespace HotelManagement.Pages.Admin
             if (room == null)
             {
                 return RedirectToPage("/Admin/ManageRooms");
+            }
+
+            //gi? ?nh c? n?u không upload
+            if (MainImage == null)
+            {
+                Room.image = room.image;
             }
 
             // UPDATE TEXT
@@ -101,7 +107,6 @@ namespace HotelManagement.Pages.Admin
                 }
             }
 
-            // ?? SAVE 1 L?N CU?I
             _context.SaveChanges();
 
             // LOG EDIT ROOM

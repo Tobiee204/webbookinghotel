@@ -17,7 +17,7 @@ namespace HotelManagement.Pages
         public Dictionary<int, double> AvgRating { get; set; }
         public List<int> HotRooms { get; set; }
 
-        public void OnGet(string status, string room)
+        public void OnGet(string status, string room, string category)
         {
             var query = _context.Rooms
             .Where(r => r.is_active == true)
@@ -27,6 +27,12 @@ namespace HotelManagement.Pages
             if (!string.IsNullOrEmpty(status) && status != "all")
             {
                 query = query.Where(r => r.status.ToLower() == status.ToLower());
+            }
+
+            // FILTER CATEGORY
+            if (!string.IsNullOrEmpty(category) && category != "all")
+            {
+                query = query.Where(r => r.room_category.ToLower() == category.ToLower());
             }
 
             // SEARCH

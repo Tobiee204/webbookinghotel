@@ -4,6 +4,10 @@
     Layout = "_AdminLayout";
 }
 
+<div id="validationBox" class="alert alert-danger text-center shadow-sm" style="display:none;">
+    <span asp-validation-summary="All"></span>
+</div>
+
 <div class="container py-5">
 
     <div class="card shadow-lg p-4">
@@ -75,9 +79,26 @@
                 </select>
             </div>
 
+
+            <div class="mb-3 text-center">
+                <label class="d-block mb-2 fw-bold">Current Image</label>
+
+                @if (!string.IsNullOrEmpty(Model.Room.image))
+                {
+                    <img src="@Model.Room.image"
+                         class="img-thumbnail shadow-sm"
+                         style="max-width:250px; border-radius:12px;" />
+                }
+                else
+                {
+                    <p class="text-muted">No image</p>
+                }
+            </div>
+
             <!-- Image -->
             <div class="mb-3">
-                <label>Main Image</label>
+                <input type="hidden" asp-for="Room.image" />
+                <label>Change Main Image</label>
                 <input type="file" name="MainImage" class="form-control">
             </div>
 
@@ -95,3 +116,26 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const box = document.getElementById("validationBox");
+
+        if (box && box.innerText.trim() !== "") {
+            box.style.display = "block";
+
+            // fade in
+            box.style.opacity = "0";
+            box.style.transition = "opacity 0.5s";
+            setTimeout(() => box.style.opacity = "1", 50);
+
+            // auto hide sau 3s
+            setTimeout(() => {
+                box.style.opacity = "0";
+                setTimeout(() => box.remove(), 500);
+            }, 3000);
+        }
+
+    });
+</script>
