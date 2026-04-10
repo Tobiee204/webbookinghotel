@@ -141,9 +141,9 @@
                 {
                     <span class="badge bg-warning">Pending</span>
                 }
-                else if (Model.Room.status == "booked")
+                else
                 {
-                    <span class="badge bg-danger">Booked</span>
+                    <span class="badge bg-danger">@Model.Room.status</span>
                 }
             </p>
 
@@ -188,6 +188,13 @@
 }
 
 <h4>Leave a Review</h4>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 
 <form method="post" asp-page-handler="Review">
     <input type="hidden" name="id" value="@Model.Room.room_id" />

@@ -95,6 +95,13 @@ namespace HotelManagement.Pages
             if (userId == null)
                 return RedirectToPage("/Login");
 
+
+            if (string.IsNullOrWhiteSpace(Comment))
+            {
+                TempData["Error"] = "Comment cannot be empty!";
+                return RedirectToPage(new { id });
+            }
+
             var review = new Review
             {
                 user_id = userId.Value,

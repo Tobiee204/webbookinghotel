@@ -19,7 +19,10 @@
 
         </div>
 
-        <p>@r.comment</p>
+        @if (!string.IsNullOrWhiteSpace(r.comment))
+            {
+                <p>@r.comment</p>
+            }
 
         @{
             var userId = Context.Session.GetInt32("UserId");
