@@ -16,23 +16,29 @@ namespace HotelManagement.Pages.Admin
 
         public List<Offer> Offers { get; set; }
 
-        // ?? LOAD DATA
+
         public void OnGet()
         {
             Offers = _context.Offers
+                .Where(o => !o.is_delete)
                 .OrderByDescending(o => o.offer_id)
                 .ToList();
         }
 
-        // ?? DELETE
-        public IActionResult OnGetDelete(int id)
+        public IActionResult OnPostDelete(int id)
         {
             var offer = _context.Offers.FirstOrDefault(o => o.offer_id == id);
 
             if (offer != null)
             {
-                _context.Offers.Remove(offer);
+                offer.is_delete = true;
                 _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Offer deleted successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Offer not found!";
             }
 
             return RedirectToPage();

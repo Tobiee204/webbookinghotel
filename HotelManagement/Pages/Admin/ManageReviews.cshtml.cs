@@ -50,6 +50,8 @@ namespace HotelManagement.Pages.Admin
                 user.ban_reason = banReason;
                 _context.SaveChanges();
 
+                TempData["SuccessMessage"] = $"User {user.name} has been banned successfully.";
+
                 LogHelper.Log(
                     _context,
                     HttpContext,
@@ -57,6 +59,11 @@ namespace HotelManagement.Pages.Admin
                     "BAN_USER",
                     $"Admin banned user {userId} until {banUntil} | Reason: {banReason}"
                     );
+            }
+
+            else
+            {
+                TempData["ErrorMessage"] = "User not found!";
             }
 
             return RedirectToPage(new { roomId = Request.Query["roomId"] });
@@ -72,6 +79,8 @@ namespace HotelManagement.Pages.Admin
             {
                 user.banned_until = null;
                 _context.SaveChanges();
+
+                TempData["SuccessMessage"] = $"User {user.name} has been unbanned.";
 
                 LogHelper.Log(
                     _context,
@@ -96,6 +105,8 @@ namespace HotelManagement.Pages.Admin
                 r.is_deleted = true; // soft delete
                 _context.SaveChanges();
 
+                TempData["SuccessMessage"] = "Review deleted successfully.";
+
                 LogHelper.Log(
                     _context,
                     HttpContext,
@@ -118,6 +129,8 @@ namespace HotelManagement.Pages.Admin
             {
                 reply.is_deleted = true;
                 _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Reply deleted successfully.";
 
                 LogHelper.Log(
                     _context,

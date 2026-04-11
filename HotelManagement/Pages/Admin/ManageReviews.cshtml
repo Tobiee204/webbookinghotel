@@ -4,6 +4,20 @@
 
 <h2>Manage Reviews</h2>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center shadow-sm">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center shadow-sm">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -176,6 +190,17 @@
     </div>
     }
 }
+
+<script>
+    setTimeout(() => {
+        let alerts = document.querySelectorAll(".alert");
+        alerts.forEach(a => {
+            a.style.transition = "opacity 0.5s";
+            a.style.opacity = "0";
+            setTimeout(() => a.remove(), 500);
+        });
+    }, 3000);
+</script>
 
 
 

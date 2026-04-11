@@ -3,6 +3,13 @@
 
 <h2>Edit Offer</h2>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <form method="post">
 
     <input type="hidden" asp-for="Offer.offer_id" />
@@ -11,12 +18,14 @@
     <div class="mb-3">
         <label>Code</label>
         <input asp-for="Offer.code" class="form-control" />
+        <span asp-validation-for="Offer.code" class="text-danger"></span>
     </div>
 
     <!-- DISCOUNT -->
     <div class="mb-3">
         <label>Discount Value</label>
         <input asp-for="Offer.discount_value" type="number" class="form-control" />
+        <span asp-validation-for="Offer.discount_value" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -40,6 +49,7 @@
     <div class="mb-3" id="conditionBox">
         <label>Minimum Amount</label>
         <input asp-for="Offer.min_amount" type="number" class="form-control" />
+        <span asp-validation-for="Offer.min_amount" class="text-danger"></span>
     </div>
 
     <!-- EVENT -->
@@ -47,11 +57,13 @@
         <div class="mb-3">
             <label>Start Date</label>
             <input asp-for="Offer.start_date" type="datetime-local" class="form-control" />
+            <span asp-validation-for="Offer.start_date" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label>End Date</label>
             <input asp-for="Offer.end_date" type="datetime-local" class="form-control" />
+            <span asp-validation-for="Offer.end_date" class="text-danger"></span>
         </div>
     </div>
 
@@ -62,6 +74,7 @@
             <option value="true">Active</option>
             <option value="false">Inactive</option>
         </select>
+        <span asp-validation-for="Offer.is_active" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Update</button>
@@ -81,5 +94,16 @@
 
         document.getElementById("offerType").addEventListener("change", toggleFields);
         toggleFields();
+    </script>
+
+    <script>
+        setTimeout(() => {
+            let alerts = document.querySelectorAll(".alert");
+            alerts.forEach(a => {
+                a.style.transition = "opacity 0.5s";
+                a.style.opacity = "0";
+                setTimeout(() => a.remove(), 500);
+            });
+        }, 3000);
     </script>
 }

@@ -25,6 +25,12 @@ namespace HotelManagement.Pages.Admin
         {
             var adminId = HttpContext.Session.GetInt32("UserId");
 
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Please fill all required fields!";
+                return Page();
+            }
+
             if (Upload != null)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Upload.FileName);
@@ -48,6 +54,8 @@ namespace HotelManagement.Pages.Admin
                 "ADD_SERVICE",
                 $"Admin added service {Service.name} (ID: {Service.service_id})"
             );
+
+            TempData["SuccessMessage"] = "Service added successfully!";
 
             return RedirectToPage("/Admin/ManageServices");
         }

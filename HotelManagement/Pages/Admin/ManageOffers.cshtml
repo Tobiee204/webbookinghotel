@@ -5,6 +5,20 @@
 
 <a asp-page="/Admin/AddOffer" class="btn btn-primary mb-3">+ Add Offer</a>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
@@ -28,7 +42,7 @@
                 <td>
                     @if (o.discount_type == "percent")
                     {
-                        @($"{o.discount_value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))} VNĐ")
+                        @($"{o.discount_value:#}%")
                     }
                     else
                     {
@@ -75,14 +89,25 @@
                 <td>
                     <a asp-page="EditOffer" asp-route-id="@o.offer_id" class="btn btn-sm btn-warning">Edit</a>
 
-                    <a asp-page-handler="Delete"
-                       asp-route-id="@o.offer_id"
-                       class="btn btn-sm btn-danger"
-                       onclick="return confirm('Are you sure to delete this offer?')">
-                        Delete
-                    </a>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@o.offer_id" style="display:inline">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Are you sure to delete this offer?')">
+                            Delete
+                        </button>
+                    </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    setTimeout(() => {
+        let alerts = document.querySelectorAll(".alert");
+        alerts.forEach(a => {
+            a.style.transition = "opacity 0.5s";
+            a.style.opacity = "0";
+            setTimeout(() => a.remove(), 500);
+        });
+    }, 3000);
+</script>

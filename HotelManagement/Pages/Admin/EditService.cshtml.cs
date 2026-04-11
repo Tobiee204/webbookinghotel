@@ -34,11 +34,20 @@ namespace HotelManagement.Pages.Admin
 
             if (existing == null) return NotFound();
 
+            ModelState.Remove("Upload");
+
+            if (!ModelState.IsValid)
+            {
+                Service.image = existing.image;
+
+                TempData["ErrorMessage"] = "Update failed! Please check input.";
+                return Page();
+            }
+
             existing.name = Service.name;
             existing.description = Service.description;
 
-
-            if (Upload != null)
+            if (Upload != null && Upload.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Upload.FileName);
                 var filePath = Path.Combine("wwwroot/images", fileName);
@@ -51,6 +60,7 @@ namespace HotelManagement.Pages.Admin
                 existing.image = "/images/" + fileName;
             }
 
+
             _context.SaveChanges();
 
             LogHelper.Log(
@@ -60,6 +70,8 @@ namespace HotelManagement.Pages.Admin
                 "EDIT_SERVICE",
                 $"Admin updated service {existing.service_id} | Name: {existing.name}"
             );
+
+            TempData["SuccessMessage"] = "Service updated successfully!";
 
             return RedirectToPage("ManageServices");
         }

@@ -20,6 +20,8 @@ namespace HotelManagement.Models
 
         public bool is_active { get; set; }
 
+        public bool is_delete { get; set; }
+
         public string type { get; set; } // condition | event
     }
 }

@@ -40,8 +40,10 @@ namespace HotelManagement.Pages.Admin
         // UPDATE DATA KHI B?M NÚT
         public IActionResult OnPost()
         {
+
             if (!ModelState.IsValid)
             {
+                TempData["ErrorMessage"] = "Please check your input!";
                 return Page();
             }
 
@@ -52,7 +54,6 @@ namespace HotelManagement.Pages.Admin
                 return RedirectToPage("/Admin/ManageRooms");
             }
 
-            //gi? ?nh c? n?u không upload
             if (MainImage == null)
             {
                 Room.image = room.image;
@@ -69,7 +70,7 @@ namespace HotelManagement.Pages.Admin
             room.room_category = Room.room_category;
             room.status = Room.status;
 
-            // ?? UPDATE MAIN IMAGE
+            // UPDATE MAIN IMAGE
             if (MainImage != null)
             {
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(MainImage.FileName);
@@ -83,7 +84,7 @@ namespace HotelManagement.Pages.Admin
                 room.image = "/images/" + fileName;
             }
 
-            // ?? ADD MORE IMAGES (FIX CHU?N)
+            // ADD MORE IMAGES (FIX CHU?N)
             if (Uploads != null && Uploads.Count > 0)
             {
                 foreach (var file in Uploads)
@@ -109,7 +110,6 @@ namespace HotelManagement.Pages.Admin
 
             _context.SaveChanges();
 
-            // LOG EDIT ROOM
             var adminId = HttpContext.Session.GetInt32("UserId");
 
             LogHelper.Log(
@@ -120,7 +120,7 @@ namespace HotelManagement.Pages.Admin
                 $"Admin updated room {room.room_id} | Title: {room.title} | Price: {room.price} | Status: {room.status}"
             );
 
-            TempData["SuccessMessage"] = " ? Update room successfully!";
+            TempData["SuccessMessage"] = " Update room successfully!";
             return RedirectToPage("/Admin/ManageRooms");
         }
     }

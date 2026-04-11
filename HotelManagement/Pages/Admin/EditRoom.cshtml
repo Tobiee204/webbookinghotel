@@ -4,15 +4,18 @@
     Layout = "_AdminLayout";
 }
 
-<div id="validationBox" class="alert alert-danger text-center shadow-sm" style="display:none;">
-    <span asp-validation-summary="All"></span>
-</div>
-
 <div class="container py-5">
 
     <div class="card shadow-lg p-4">
 
         <h3 class="mb-4 text-center">Edit Room</h3>
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger text-center">
+                @TempData["ErrorMessage"]
+            </div>
+        }
 
         <form method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
@@ -23,42 +26,49 @@
             <div class="mb-3">
                 <label>Room Title</label>
                 <input asp-for="Room.title" class="form-control">
+                <span asp-validation-for="Room.title" class="text-danger"></span>
             </div>
 
             <!-- Location -->
             <div class="mb-3">
                 <label>Location</label>
                 <input asp-for="Room.room_type" class="form-control">
+                <span asp-validation-for="Room.room_type" class="text-danger"></span>
             </div>
 
             <!-- Price -->
             <div class="mb-3">
                 <label>Price</label>
                 <input asp-for="Room.price" type="number" class="form-control" step="1000" min="0">
+                <span asp-validation-for="Room.price" class="text-danger"></span>
             </div>
 
             <!-- Guests -->
             <div class="mb-3">
                 <label>Guests</label>
                 <input asp-for="Room.guests" type="number" class="form-control">
+                <span asp-validation-for="Room.guests" class="text-danger"></span>
             </div>
 
             <!-- Bed Type -->
             <div class="mb-3">
                 <label>Bed Type</label>
                 <input asp-for="Room.bed_type" class="form-control">
+                <span asp-validation-for="Room.bed_type" class="text-danger"></span>
             </div>
 
             <!-- Description -->
             <div class="mb-3">
                 <label>Description</label>
                 <textarea asp-for="Room.description" class="form-control"></textarea>
+                <span asp-validation-for="Room.bed_type" class="text-danger"></span>
             </div>
 
             <!-- Facilities -->
             <div class="mb-3">
                 <label>Facilities</label>
                 <input asp-for="Room.facilities" class="form-control">
+                <span asp-validation-for="Room.facilities" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
@@ -118,24 +128,12 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const box = document.getElementById("validationBox");
-
-        if (box && box.innerText.trim() !== "") {
-            box.style.display = "block";
-
-            // fade in
-            box.style.opacity = "0";
-            box.style.transition = "opacity 0.5s";
-            setTimeout(() => box.style.opacity = "1", 50);
-
-            // auto hide sau 3s
-            setTimeout(() => {
-                box.style.opacity = "0";
-                setTimeout(() => box.remove(), 500);
-            }, 3000);
-        }
-
-    });
+    setTimeout(() => {
+        let alerts = document.querySelectorAll(".alert");
+        alerts.forEach(a => {
+            a.style.transition = "opacity 0.5s";
+            a.style.opacity = "0";
+            setTimeout(() => a.remove(), 500);
+        });
+    }, 3000);
 </script>

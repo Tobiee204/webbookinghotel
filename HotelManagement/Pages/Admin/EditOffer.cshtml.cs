@@ -44,14 +44,12 @@ namespace HotelManagement.Pages.Admin
             // VALIDATE
             if (string.IsNullOrEmpty(Offer.code))
             {
-                ModelState.AddModelError("", "Code required");
-                return Page();
+                ModelState.AddModelError("Offer.code", "Code is required");
             }
 
             if (Offer.discount_value <= 0)
             {
-                ModelState.AddModelError("", "Invalid discount");
-                return Page();
+                ModelState.AddModelError("Offer.discount_value", "Discount must be greater than 0");
             }
 
             // CONDITION
@@ -59,8 +57,7 @@ namespace HotelManagement.Pages.Admin
             {
                 if (!Offer.min_amount.HasValue)
                 {
-                    ModelState.AddModelError("", "Min amount required");
-                    return Page();
+                    ModelState.AddModelError("Offer.min_amount", "Minimum amount is required");
                 }
 
                 Offer.start_date = null;
@@ -70,22 +67,33 @@ namespace HotelManagement.Pages.Admin
             // EVENT
             if (Offer.type == "event")
             {
-                if (!Offer.start_date.HasValue || !Offer.end_date.HasValue)
-                {
-                    ModelState.AddModelError("", "Date required");
-                    return Page();
-                }
+                if (!Offer.start_date.HasValue)
+                    ModelState.AddModelError("Offer.start_date", "Start date is required");
 
-                if (Offer.start_date > Offer.end_date)
+                if (!Offer.end_date.HasValue)
+                    ModelState.AddModelError("Offer.end_date", "End date is required");
+
+                if (Offer.start_date.HasValue && Offer.end_date.HasValue &&
+                    Offer.start_date > Offer.end_date)
                 {
-                    ModelState.AddModelError("", "Invalid date");
-                    return Page();
+                    ModelState.AddModelError("Offer.end_date", "End date must be after start date");
                 }
 
                 Offer.min_amount = null;
+
+                if (Offer.end_date < DateTime.Now && Offer.is_active)
+                {
+                    ModelState.AddModelError("Offer.is_active", "This offer has expired and cannot be activated");
+                }
             }
 
-            // ?? UPDATE FIELD
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Update failed! Please check again.";
+                return Page();
+            }
+
+            // UPDATE
             offerInDb.code = Offer.code;
             offerInDb.discount_value = Offer.discount_value;
             offerInDb.discount_type = Offer.discount_type;
@@ -106,6 +114,8 @@ namespace HotelManagement.Pages.Admin
                 "EDIT_OFFER",
                 $"Updated offer '{offerInDb.code}' (ID: {offerInDb.offer_id})"
             );
+
+            TempData["SuccessMessage"] = "Offer updated successfully!";
 
             return RedirectToPage("/Admin/ManageOffers");
         }

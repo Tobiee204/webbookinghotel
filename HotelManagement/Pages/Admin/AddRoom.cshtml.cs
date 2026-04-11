@@ -50,7 +50,7 @@ namespace HotelManagement.Pages.Admin
 
             if (!ModelState.IsValid)
             {
-                ErrorMessage = "? Please fix the errors below!";
+                ErrorMessage = " Please fix the errors below!";
                 return Page();
             }
 
@@ -65,7 +65,7 @@ namespace HotelManagement.Pages.Admin
 
             if (Room.price <= 0)
             {
-                ErrorMessage = "? Price must be greater than 0!";
+                ErrorMessage = " Price must be greater than 0!";
                 return Page();
             }
 
@@ -114,9 +114,9 @@ namespace HotelManagement.Pages.Admin
             var adminId = HttpContext.Session.GetInt32("UserId");
             LogHelper.Log(_context, HttpContext, adminId, "ADD_ROOM", $"Added room: {Room.title}");
 
-            SuccessMessage = "? Room added successfully!";
+            SuccessMessage = " Room added successfully!";
 
-            TempData["SuccessMessage"] = " ? Add room successfully!";
+            TempData["SuccessMessage"] = " Add room successfully!";
             return RedirectToPage();
         }
 

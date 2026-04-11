@@ -25,16 +25,22 @@ namespace HotelManagement.Pages.Admin
 
         public IActionResult OnPost()
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Please check your input!";
+                return Page();
+            }
+
             // VALIDATE
             if (string.IsNullOrEmpty(Offer.code))
             {
-                ModelState.AddModelError("", "Code is required");
+                ModelState.AddModelError("Offer.code", "Code is required");
                 return Page();
             }
 
             if (Offer.discount_value <= 0)
             {
-                ModelState.AddModelError("", "Discount must be > 0");
+                ModelState.AddModelError("Offer.discount_value", "Discount must be greater than 0");
                 return Page();
             }
 
@@ -43,11 +49,10 @@ namespace HotelManagement.Pages.Admin
             {
                 if (!Offer.min_amount.HasValue)
                 {
-                    ModelState.AddModelError("", "Min amount required");
+                    ModelState.AddModelError("Offer.min_amount", "Minimum amount is required");
                     return Page();
                 }
 
-                // reset event fields
                 Offer.start_date = null;
                 Offer.end_date = null;
             }
@@ -57,21 +62,21 @@ namespace HotelManagement.Pages.Admin
             {
                 if (!Offer.start_date.HasValue || !Offer.end_date.HasValue)
                 {
-                    ModelState.AddModelError("", "Start/End date required");
+                    ModelState.AddModelError("Offer.start_date", "Start date is required");
+                    ModelState.AddModelError("Offer.end_date", "End date is required");
                     return Page();
                 }
 
                 if (Offer.start_date > Offer.end_date)
                 {
-                    ModelState.AddModelError("", "Invalid date range");
+                    ModelState.AddModelError("Offer.end_date", "End date must be after start date");
                     return Page();
                 }
 
-                // reset condition field
                 Offer.min_amount = null;
             }
 
-            // ?? DEFAULT
+            //  DEFAULT
             Offer.is_active = true;
 
             _context.Offers.Add(Offer);
@@ -86,6 +91,8 @@ namespace HotelManagement.Pages.Admin
                 "ADD_OFFER",
                 $"Created offer code '{Offer.code}' with {Offer.discount_value} {Offer.discount_type}"
             );
+
+            TempData["SuccessMessage"] = "Offer added successfully!";
 
             return RedirectToPage("/Admin/ManageOffers");
         }

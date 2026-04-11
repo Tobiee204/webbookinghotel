@@ -6,9 +6,12 @@ namespace HotelManagement.Models
     {
         [Key]
         public int service_id { get; set; }
-            public string name { get; set; }
-            public string? image { get; set; }
-            public string description { get; set; }
+
+        [Required(ErrorMessage = "Service name is required")]
+        public string name { get; set; }
+        public string? image { get; set; }
+        [Required(ErrorMessage = "Description is required")]
+        public string description { get; set; }
     }
 }
 
