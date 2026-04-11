@@ -70,7 +70,7 @@ namespace HotelManagement.Pages
 
             // VALIDATE PASSWORD
             if (!Regex.IsMatch(User.password,
-                @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$"))
+                @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"))
             {
                 TempData["Error"] = "Password must include uppercase, lowercase, number and special character!";
                 return Page();
@@ -89,14 +89,14 @@ namespace HotelManagement.Pages
             // SET TIME
             User.created_at = DateTime.Now;
 
-            // T?O OTP
+            // TAO OTP
             var otp = new Random().Next(100000, 999999).ToString();
 
             TempData["OTP"] = otp;
             TempData["Email"] = User.email;
             TempData["UserData"] = System.Text.Json.JsonSerializer.Serialize(User);
 
-            // G?I EMAIL
+            // G?i EMAIL
             SendOTP(User.email, otp);
 
             TempData["Success"] = "OTP has been sent to your email!";
@@ -142,7 +142,7 @@ namespace HotelManagement.Pages
                 TempData["Email"] = email;
                 TempData.Keep();
 
-                SendOTP(email, otp); // ? ?úng
+                SendOTP(email, otp);
             }
 
             return new JsonResult("sent");

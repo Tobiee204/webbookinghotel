@@ -11,6 +11,8 @@ namespace HotelManagement.Models
         public int review_id { get; set; }
         public int? parent_reply_id { get; set; }
         public int user_id { get; set; }
+
+        [MaxLength(300)]
         public string comment { get; set; }
         public int likes { get; set; } = 0;
         public int dislikes { get; set; } = 0;

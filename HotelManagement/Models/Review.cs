@@ -11,6 +11,8 @@ namespace HotelManagement.Models
         public int room_id { get; set; }
 
         public double rating { get; set; }
+
+        [MaxLength(500)]
         public string comment { get; set; }
 
         public DateTime created_at { get; set; }

@@ -45,6 +45,12 @@ namespace HotelManagement.Pages
             if (userId == null)
                 return RedirectToPage("/Login");
 
+            if (replyText.Length > 300)
+            {
+                TempData["Error"] = "Reply too long (max 300 characters)";
+                return RedirectToPage(new { id });
+            }
+
             var reply = new ReviewReply
             {
                 review_id = reviewId,
@@ -99,6 +105,12 @@ namespace HotelManagement.Pages
             if (string.IsNullOrWhiteSpace(Comment))
             {
                 TempData["Error"] = "Comment cannot be empty!";
+                return RedirectToPage(new { id });
+            }
+
+            if (Comment.Length > 500)
+            {
+                TempData["Error"] = "Comment too long (max 500 characters)";
                 return RedirectToPage(new { id });
             }
 
