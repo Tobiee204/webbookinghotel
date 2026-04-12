@@ -24,6 +24,8 @@ namespace HotelManagement.Models
         public decimal? total_price { get; set; }
         public decimal? final_price { get; set; }
 
+        public int? offer_id { get; set; }
+
         public Payment? Payment { get; set; }
     }
 }

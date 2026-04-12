@@ -35,9 +35,11 @@
                     <a href="/Admin/UserDetails?id=@u.user_id" class="btn btn-info btn-sm">View</a>
                 </td>
                 <td>
-                    @(Model.TotalSpent.ContainsKey(u.user_id)
-                                    ? Model.TotalSpent[u.user_id].ToString("N0")
-                                    : "0") VNĐ
+                    @(
+                      Model.TotalSpent.ContainsKey(u.user_id)
+                          ? Model.TotalSpent[u.user_id].ToString("N0", new System.Globalization.CultureInfo("vi-VN")) + " VNĐ"
+                          : "0 VNĐ"
+                          )
             </td>
             <td>
                 <form method="post" asp-page-handler="Toggle" asp-route-id="@u.user_id">

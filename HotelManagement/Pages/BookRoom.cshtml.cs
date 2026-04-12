@@ -85,7 +85,7 @@ namespace HotelManagement.Pages
             {
                 ModelState.AddModelError("", "Check-in cannot be in the past");
 
-                // ?? LOAD L?I DATA
+                // LOAD L?I DATA
                 Room = _context.Rooms.FirstOrDefault(r => r.room_id == id);
 
                 var userIdReload = HttpContext.Session.GetInt32("UserId");
@@ -100,12 +100,12 @@ namespace HotelManagement.Pages
                 return Page();
             }
 
-            // ? Check-out ph?i l?n h?n check-in
+            //  Check-out ph?i l?n h?n check-in
             if (CheckOut <= CheckIn)
             {
                 ModelState.AddModelError("", "Check-out must be after check-in");
 
-                // ?? LOAD L?I DATA
+                // LOAD L?I DATA
                 Room = _context.Rooms.FirstOrDefault(r => r.room_id == id);
 
                 var userIdReload = HttpContext.Session.GetInt32("UserId");
@@ -120,11 +120,11 @@ namespace HotelManagement.Pages
                 return Page();
             }
 
-            // ?? TÍNH TI?N
+            // TÍNH TI?N
             int totalDays = (CheckOut - CheckIn).Days;
             decimal totalPrice = Room.final_price * totalDays;
 
-            // ?? APPLY VOUCHER (CH?N)
+            // APPLY VOUCHER (CH?N)
             decimal finalPrice = totalPrice;
 
             if (SelectedOfferId.HasValue)
@@ -161,17 +161,6 @@ namespace HotelManagement.Pages
                         {
                             finalPrice -= offer.discount_value;
                         }
-
-                        // ?? MARK USED
-                        var userOffer = _context.UserOffers.FirstOrDefault(x =>
-                            x.offer_id == SelectedOfferId.Value &&
-                            x.user_id == userId &&
-                            !x.is_used);
-
-                        if (userOffer != null)
-                        {
-                            userOffer.is_used = true;
-                        }
                     }
                 }
             }
@@ -179,7 +168,7 @@ namespace HotelManagement.Pages
             // ?? FIX âm ti?n
             if (finalPrice < 0) finalPrice = 0;
 
-            // ?? L?u BOOKING LUÔN
+            //  L?u BOOKING LUÔN
             var booking = new Booking
             {
                 user_id = userId.Value,
@@ -188,7 +177,9 @@ namespace HotelManagement.Pages
                 check_out = CheckOut,
                 status = "unpaid",
                 total_price = totalPrice,
-                final_price = finalPrice
+                final_price = finalPrice,
+
+                offer_id = SelectedOfferId
             };
 
             _context.Bookings.Add(booking);

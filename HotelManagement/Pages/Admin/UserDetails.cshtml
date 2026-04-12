@@ -63,13 +63,13 @@
                     @if (b.status == "cancelled" || b.Payment == null)
                     {
                         <span class="text-muted fw-bold">
-                            @((b.final_price ?? 0).ToString("N0")) VNĐ
+                            @((b.final_price ?? 0).ToString("N0", new System.Globalization.CultureInfo("vi-VN")) + " VNĐ")
                         </span>
                     }
                     else
                     {
                         <span class="text-success fw-bold">
-                            @((b.final_price ?? 0).ToString("N0")) VNĐ
+                            @((b.final_price ?? 0).ToString("N0", new System.Globalization.CultureInfo("vi-VN")) + " VNĐ")
                         </span>
                     }
                 </td>

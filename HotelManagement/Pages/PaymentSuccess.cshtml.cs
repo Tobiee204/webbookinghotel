@@ -46,6 +46,21 @@ namespace HotelManagement.Pages
                     room.status = "pending";
                 }
 
+
+                // ? MARK VOUCHER T?I ?ÂY (?ÚNG TH?I ?I?M)
+                if (booking.offer_id != null)
+                {
+                    var userOffer = _context.UserOffers.FirstOrDefault(u =>
+                        u.user_id == booking.user_id &&
+                        u.offer_id == booking.offer_id &&
+                        !u.is_used);
+
+                    if (userOffer != null)
+                    {
+                        userOffer.is_used = true;
+                    }
+                }
+
                 //THÊM PAYMENT (QUAN TR?NG)
                 var payment = new Payment
                 {
