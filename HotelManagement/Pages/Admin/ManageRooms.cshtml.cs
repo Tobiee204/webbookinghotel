@@ -26,13 +26,25 @@ namespace HotelManagement.Pages.Admin
 
             foreach (var room in rooms)
             {
-                bool hasActiveBooking = _context.Bookings.Any(b =>
-                    b.room_id == room.room_id &&
-                    b.check_out > today &&
-                    b.status != "cancelled"
-                );
+                var activeBooking = _context.Bookings
+                         .Where(b => b.room_id == room.room_id
+                                  && b.check_out > today
+                                  && b.status != "cancelled")
+                         .OrderByDescending(b => b.booking_id)
+                         .FirstOrDefault();
 
-                room.status = hasActiveBooking ? "Booked" : "Available";
+                if (activeBooking == null)
+                {
+                    room.status = "Available";
+                }
+                else if (activeBooking.status == "pending")
+                {
+                    room.status = "Pending";
+                }
+                else if (activeBooking.status == "confirmed")
+                {
+                    room.status = "Booked";
+                }
             }
 
             _context.SaveChanges();

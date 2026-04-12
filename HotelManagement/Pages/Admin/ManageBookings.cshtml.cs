@@ -31,7 +31,9 @@ namespace HotelManagement.Pages.Admin
                 query = query.Where(b => b.status == status);
             }
 
-            Bookings = query.ToList();
+            Bookings = query
+                .OrderByDescending(b => b.booking_id)
+                .ToList();
         }
 
         public IActionResult OnPostUpdateStatus(int id, string status, string reason, string customReason)
@@ -48,10 +50,10 @@ namespace HotelManagement.Pages.Admin
 
                 string finalReason = "";
 
-                // ?? l?u lý do
+                // l?u lý do
                 if (status == "cancelled")
                 {
-                    finalReason = reason == "Lý do khác" ? customReason : reason;
+                    finalReason = reason == "Other" ? customReason : reason;
                     booking.cancel_reason = finalReason;
                 }
 

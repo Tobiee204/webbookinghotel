@@ -15,14 +15,22 @@ namespace HotelManagement.Pages
             _context = context;
         }
 
+        public bool IsSuccess { get; set; }
+
         public IActionResult OnGet()
         {
+            var roomId = Request.Query["id"];
             var resultCode = Request.Query["resultCode"];
             var bookingIdStr = Request.Query["extraData"];
 
-            // N?u thanh toán th?t b?i ? không làm gì
+            //FAIL
             if (resultCode != "0" || string.IsNullOrEmpty(bookingIdStr))
-                return Page();
+            {
+                return RedirectToPage("/BookRoom", new { id = roomId });
+            }
+
+            //SUCCESS
+            IsSuccess = true;
 
             int bookingId = int.Parse(bookingIdStr);
 
@@ -38,7 +46,7 @@ namespace HotelManagement.Pages
                     room.status = "pending";
                 }
 
-                // ?? THÊM PAYMENT (QUAN TR?NG)
+                //THÊM PAYMENT (QUAN TR?NG)
                 var payment = new Payment
                 {
                     booking_id = bookingId,

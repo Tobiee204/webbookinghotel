@@ -27,8 +27,8 @@
         {
             <tr>
                 <td>@b.Room.title</td>
-                <td>@b.check_in</td>
-                <td>@b.check_out</td>
+                <td>@b.check_in.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                <td>@b.check_out.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
 
                 <td>
                     @if (b.status == "pending")

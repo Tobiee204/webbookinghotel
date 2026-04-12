@@ -133,17 +133,21 @@
 
             <p>
                 Status:
-                @if (Model.Room.status == "Available")
+                @if (Model.Room.status?.ToLower() == "available")
                 {
                     <span class="badge bg-success">Available</span>
                 }
-                else if (Model.Room.status == "pending")
+                else if (Model.Room.status?.ToLower() == "pending")
                 {
-                    <span class="badge bg-warning">Pending</span>
+                    <span class="badge bg-warning text-dark">Pending</span>
+                }
+                else if (Model.Room.status?.ToLower() == "booked")
+                {
+                    <span class="badge bg-danger">Booked</span>
                 }
                 else
                 {
-                    <span class="badge bg-danger">@Model.Room.status</span>
+                    <span class="badge bg-secondary">@Model.Room.status</span>
                 }
             </p>
 

@@ -25,9 +25,9 @@
                 <tr>
                     <th>ID</th>
                     <th>User</th>
-                    <th>Hotel</th>
                     <th>Room</th>
-                    <th>Date</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
                     <th>Status</th>
                     <th width="120">Action</th>
                 </tr>
@@ -40,9 +40,9 @@
                     <tr>
                         <td>@b.booking_id</td>
                         <td>@b.User?.name</td>
-                        <td>Angel Hotel</td>
                         <td>@b.Room?.title</td>
-                        <td>@b.check_in.ToShortDateString()</td>
+                        <td>@b.check_in.ToString("dd/MM/yyyy")</td>
+                        <td>@b.check_out.ToString("dd/MM/yyyy")</td>
 
                         <td>
                             @if (b.status == "confirmed")
@@ -64,22 +64,55 @@
                             {
                                 <form method="post" asp-page-handler="UpdateStatus">
                                     <input type="hidden" name="id" value="@b.booking_id" />
-                                    <button name="status" value="confirmed" class="btn btn-success btn-sm">Confirm</button>
+
+                                    <!-- CONFIRM -->
+                                    <button name="status" value="confirmed" class="btn btn-success btn-sm">
+                                        Confirm
+                                    </button>
+
+                                    <!-- CANCEL -->
                                     <div class="mt-1">
-                                        <select name="reason" class="form-select form-select-sm mb-1">
+                                        <select name="reason" class="form-select form-select-sm mb-1" onchange="toggleReason(this)">
                                             <option value="The room is under maintenance.">The room is under maintenance.</option>
                                             <option value="The customer requested a cancellation.">The customer requested a cancellation.</option>
-                                            <option value="Other reasons">Other reasons</option>
+                                            <option value="Other">Other reasons</option>
                                         </select>
 
-                                        <input name="customReason" class="form-control form-control-sm mb-1"
-                                               placeholder="Enter another reason..." />
+                                        <input name="customReason"
+                                               class="form-control form-control-sm mb-1 custom-reason"
+                                               placeholder="Enter another reason..."
+                                               style="display:none;" />
 
                                         <button name="status" value="cancelled"
                                                 class="btn btn-danger btn-sm">
                                             Cancel
                                         </button>
-									</div>
+                                    </div>
+                                </form>
+                            }
+                            else if (b.status == "confirmed" && DateTime.Now <= b.check_out)
+                            {
+                                <!-- CHỈ CÒN CANCEL -->
+                                <form method="post" asp-page-handler="UpdateStatus">
+                                    <input type="hidden" name="id" value="@b.booking_id" />
+
+                                    <div>
+                                        <select name="reason" class="form-select form-select-sm mb-1" onchange="toggleReason(this)">
+                                            <option value="The room is under maintenance.">The room is under maintenance.</option>
+                                            <option value="The customer requested a cancellation.">The customer requested a cancellation.</option>
+                                            <option value="Other">Other reasons</option>
+                                        </select>
+
+                                        <input name="customReason"
+                                               class="form-control form-control-sm mb-1 custom-reason"
+                                               placeholder="Enter another reason..."
+                                               style="display:none;" />
+
+                                        <button name="status" value="cancelled"
+                                                class="btn btn-danger btn-sm">
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </form>
                             }
                             else
@@ -128,4 +161,16 @@
 
     });
 
+</script>
+
+<script>
+    function toggleReason(select) {
+        var input = select.parentElement.querySelector(".custom-reason");
+
+        if (select.value === "Other") {
+            input.style.display = "block";
+        } else {
+            input.style.display = "none";
+        }
+    }
 </script>

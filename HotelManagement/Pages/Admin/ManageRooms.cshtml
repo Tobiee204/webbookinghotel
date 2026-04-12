@@ -64,13 +64,21 @@
                         <td>@r.room_type</td>
 
                         <td>
-                            @if (r.status == "Available")
+                            @if (r.status?.ToLower() == "available")
                             {
                                 <span class="badge bg-success">Available</span>
                             }
+                            else if (r.status?.ToLower() == "pending")
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                            else if (r.status?.ToLower() == "booked")
+                            {
+                                <span class="badge bg-danger">Booked</span>
+                            }
                             else
                             {
-                                <span class="badge bg-danger">@r.status</span>
+                                <span class="badge bg-secondary">@r.status</span>
                             }
                         </td>
 

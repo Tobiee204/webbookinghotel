@@ -22,49 +22,53 @@
 
         <div class="search-box p-4 bg-white rounded shadow-lg animate-search">
 
-            <div class="row g-2">
+            <div class="row g-2 align-items-center">
 
                 <!-- Destination -->
-                <div class="col-md-3">
-                    <input type="text" class="form-control" placeholder="Destination">
+                <div class="col-md-2 position-relative">
+                    <input type="text" id="searchInput"
+                           class="form-control"
+                           placeholder="Destination"
+                           onkeyup="suggestRoom()">
+
+                    <div id="suggestList" class="list-group suggest-box"></div>
                 </div>
 
                 <!-- Check In -->
                 <div class="col-md-2">
-                    <input type="date" class="form-control">
+                    <input type="date" name="checkIn" class="form-control">
                 </div>
 
                 <!-- Check Out -->
                 <div class="col-md-2">
-                    <input type="date" class="form-control">
+                    <input type="date" name="checkOut" class="form-control">
                 </div>
 
                 <!-- Guests -->
                 <div class="col-md-2">
-                    <select class="form-select">
-                        <option selected disabled hidden>Guests</option>
-                        <option>1 Person</option>
-                        <option>2 People</option>
-                        <option>3 People</option>
-                        <option>4 People (Family)</option>
+                    <select name="guests" class="form-select">
+                        <option value="">Guests</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
                     </select>
                 </div>
 
                 <!-- Bed Type -->
                 <div class="col-md-2">
-                    <select class="form-select">
-                        <option selected disabled hidden>Bed Type</option>
-                        <option>Single Bed</option>
-                        <option>Double Bed</option>
-                        <option>Couples Bed</option>
-                        <option>Queen Bed</option>
-                        <option>King Bed</option>
+                    <select name="bedType" class="form-select">
+                        <option value="">Bed Type</option>
+                        <option>Single</option>
+                        <option>Double</option>
+                        <option>Queen</option>
+                        <option>King</option>
                     </select>
                 </div>
 
-                <!-- Search Button -->
-                <div class="col-md-1">
-                    <button onclick="searchRoom()" class="btn btn-primary w-200">
+                <!-- Search -->
+                <div class="col-md-2 d-flex">
+                    <button onclick="searchRoom()" class="btn btn-primary w-100">
                         Search
                     </button>
                 </div>
@@ -474,6 +478,32 @@ color: white;
         font-weight: 700;
     }
 
+    .suggest-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+
+    max-height: 250px;
+    overflow-y: auto;
+
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.suggest-box a {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggest-box a:hover {
+    background: #f3f3f3;
+}
+
 </style>
 
 <script>
@@ -511,26 +541,59 @@ color: white;
 
     setInterval(changeHero,5000);
 
-        function searchRoom(){
+    function searchRoom() {
 
         let destination = document.querySelector("input[placeholder='Destination']").value;
+        let checkIn = document.querySelector("[name='checkIn']").value;
+        let checkOut = document.querySelector("[name='checkOut']").value;
+        let guests = document.querySelector("[name='guests']").value;
+        let bedType = document.querySelector("[name='bedType']").value;
 
-        if(destination.trim() !== ""){
-            window.location.href = "/Hotels?room=" + destination;
-        }else{
-            window.location.href = "/Hotels";
-        }
+        let url = "/Hotels?";
 
+        if (destination) url += "room=" + encodeURIComponent(destination) + "&";
+        if (checkIn) url += "checkIn=" + checkIn + "&";
+        if (checkOut) url += "checkOut=" + checkOut + "&";
+        if (guests) url += "guests=" + guests + "&";
+        if (bedType) url += "bedType=" + encodeURIComponent(bedType) + "&";
+
+        window.location.href = url;
     }
 
-        function searchRoom() {
-        let destination = document.querySelector("input[placeholder='Destination']").value;
+</script>
 
-        if (destination.trim() !== "") {
-            window.location.href = "/Hotels?room=" + encodeURIComponent(destination);
-        } else {
-            window.location.href = "/Hotels";
+        <script>
+    function suggestRoom() {
+        let keyword = document.getElementById("searchInput").value;
+
+        if (keyword.length < 1) {
+            document.getElementById("suggestList").innerHTML = "";
+            return;
         }
+
+        fetch(`/Hotels?handler=Suggest&keyword=${encodeURIComponent(keyword)}`)
+            .then(res => res.json())
+            .then(data => {
+                let html = "";
+
+                data.forEach(r => {
+                    html += `
+                        <div class="list-group-item list-group-item-action"
+                             onclick="selectRoom('${r.title}')">
+                            ${r.title}
+                        </div>`;
+                });
+
+                document.getElementById("suggestList").innerHTML = html;
+            });
     }
 
+        function selectRoom(title) {
+        document.getElementById("searchInput").value = title;
+        document.getElementById("suggestList").innerHTML = "";
+    }
+        //click vào gợi ý là search luôn
+        function selectRoom(title) {
+        window.location.href = `/Hotels?room=${encodeURIComponent(title)}`;
+    }
 </script>

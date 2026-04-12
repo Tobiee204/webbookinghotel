@@ -29,6 +29,13 @@
 
     <h2 class="text-center mb-5">Rooms</h2>
 
+    @if (TempData["NotFound"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["NotFound"]
+        </div>
+    }
+
     <div class="d-flex justify-content-center mb-4">
         <div class="btn-group shadow-sm">
 
@@ -151,17 +158,21 @@
 
                         <p>
                             Status:
-                            @if (r.status == "Available")
+                            @if (r.status?.ToLower() == "available")
                             {
                                 <span class="badge bg-success">Available</span>
                             }
-                            else if (r.status == "pending")
+                            else if (r.status?.ToLower() == "pending")
                             {
                                 <span class="badge bg-warning">Pending</span>
                             }
+                            else if (r.status?.ToLower() == "booked")
+                            {
+                                <span class="badge bg-danger">Booked</span>
+                            }
                             else
                             {
-                                <span class="badge bg-danger">@r.status</span>
+                                <span class="badge bg-secondary">@r.status</span>
                             }
                         </p>
 
@@ -214,4 +225,16 @@
     </div>
 
 </section>
+
+<script>
+    setTimeout(() => {
+        let alerts = document.querySelectorAll(".alert");
+        alerts.forEach(a => {
+            a.style.transition = "opacity 0.5s";
+            a.style.opacity = "0";
+            setTimeout(() => a.remove(), 500);
+        });
+    }, 3000);
+</script>
+
 

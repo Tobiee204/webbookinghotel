@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using HotelManagement.Data;
 using HotelManagement.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace HotelManagement.Pages
 {
@@ -17,7 +18,7 @@ namespace HotelManagement.Pages
         public Dictionary<int, double> AvgRating { get; set; }
         public List<int> HotRooms { get; set; }
 
-        public void OnGet(string status, string room, string category)
+        public void OnGet(string status, string room, string category, DateTime? checkIn, DateTime? checkOut, int? guests, string bedType)
         {
             var query = _context.Rooms
             .Where(r => r.is_active == true)
@@ -45,6 +46,28 @@ namespace HotelManagement.Pages
                     r.room_type.ToLower().Contains(room));
             }
 
+            // GUESTS
+            if (guests.HasValue)
+            {
+                query = query.Where(r => r.guests >= guests.Value);
+            }
+
+            // BED TYPE
+            if (!string.IsNullOrEmpty(bedType))
+            {
+                query = query.Where(r => r.bed_type == bedType);
+            }
+
+            // DATE AVAILABLE CHECK
+            if (checkIn.HasValue && checkOut.HasValue)
+            {
+                query = query.Where(r => !_context.Bookings.Any(b =>
+                    b.room_id == r.room_id &&
+                    b.status == "confirmed" &&
+                    (checkIn < b.check_out && checkOut > b.check_in)
+                ));
+            }
+
             AvgRating = _context.Reviews
                     .Where(r => r.is_deleted != true)
                     .GroupBy(r => r.room_id)
@@ -64,6 +87,22 @@ namespace HotelManagement.Pages
                 .OrderByDescending(r => HotRooms.Contains(r.room_id))
                 .ThenByDescending(r => r.room_id)
                 .ToList();
+
+            if (Rooms.Count == 0)
+            {
+                TempData["NotFound"] = "No suitable rooms found!";
+            }
+        }
+
+        public JsonResult OnGetSuggest(string keyword)
+        {
+            var rooms = _context.Rooms
+                .Where(r => r.is_active == true && r.title.Contains(keyword))
+                .Select(r => new { r.room_id, r.title })
+                .Take(5)
+                .ToList();
+
+            return new JsonResult(rooms);
         }
     }
 }

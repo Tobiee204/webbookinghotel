@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using HotelManagement.Data;
 using HotelManagement.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace HotelManagement.Pages
 {
@@ -51,6 +52,17 @@ namespace HotelManagement.Pages
             Services = _context.Services
                 .Take(4)
                 .ToList();
+        }
+
+        public JsonResult OnGetSuggest(string keyword)
+        {
+            var rooms = _context.Rooms
+                .Where(r => r.title.Contains(keyword))
+                .Select(r => new { r.room_id, r.title })
+                .Take(5)
+                .ToList();
+
+            return new JsonResult(rooms);
         }
     }
 }

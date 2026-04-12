@@ -179,7 +179,7 @@ namespace HotelManagement.Pages
             // ?? FIX âm ti?n
             if (finalPrice < 0) finalPrice = 0;
 
-            // ?? L?U BOOKING LUÔN
+            // ?? L?u BOOKING LUÔN
             var booking = new Booking
             {
                 user_id = userId.Value,
@@ -213,8 +213,8 @@ namespace HotelManagement.Pages
 
             string extraData = booking.booking_id.ToString();
 
-            // ? QUAN TR?NG: redirect v? PaymentSuccess
-            string redirectUrl = $"https://localhost:7096/PaymentSuccess";
+            //redirect v? PaymentSuccess
+            string redirectUrl = $"https://localhost:7096/PaymentSuccess?id={id}";
 
             string ipnUrl = "https://example.com/ipn";
 
