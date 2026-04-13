@@ -61,7 +61,7 @@ namespace HotelManagement.Pages
                 is_deleted = false
             };
 
-            //M?i thêm vào ?? làm Manage Review
+            //Thêm vào làm Manage Review
             var user = _context.Users.FirstOrDefault(u => u.user_id == userId);
 
             if (user.banned_until != null && user.banned_until > DateTime.Now)
@@ -156,7 +156,7 @@ namespace HotelManagement.Pages
             return RedirectToPage(new { id });
         }
 
-        public void OnGet(int id, int? star)
+        public IActionResult OnGet(int id, int? star)
         {
             RoomImages = _context.RoomImages
                 .Where(i => i.room_id == id)
@@ -164,6 +164,12 @@ namespace HotelManagement.Pages
 
             Room = _context.Rooms
                 .FirstOrDefault(r => r.room_id == id && r.is_active == true);
+
+            if (Room == null)
+            {
+                TempData["Error"] = "This room is no longer available.";
+                return RedirectToPage("/Hotels");
+            }
 
             if (Room != null && Room.facilities != null)
             {
@@ -228,6 +234,7 @@ namespace HotelManagement.Pages
                         .ToList();
                 }
             }
+            return Page();
         }
 
         public IActionResult OnPostLike(int id, int reviewId)

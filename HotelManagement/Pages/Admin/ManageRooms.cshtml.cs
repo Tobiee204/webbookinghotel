@@ -19,7 +19,7 @@ namespace HotelManagement.Pages.Admin
 
         public void OnGet()
         {
-            // ?? AUTO UPDATE STATUS
+            // AUTO UPDATE STATUS
             var today = DateTime.Today;
 
             var rooms = _context.Rooms.ToList();
@@ -33,21 +33,18 @@ namespace HotelManagement.Pages.Admin
                          .OrderByDescending(b => b.booking_id)
                          .FirstOrDefault();
 
-                if (activeBooking == null)
+                if (activeBooking != null)
                 {
-                    room.status = "Available";
-                }
-                else if (activeBooking.status == "pending")
-                {
-                    room.status = "Pending";
-                }
-                else if (activeBooking.status == "confirmed")
-                {
-                    room.status = "Booked";
+                    if (activeBooking.status == "pending")
+                    {
+                        room.status = "Pending";
+                    }
+                    else if (activeBooking.status == "confirmed")
+                    {
+                        room.status = "Booked";
+                    }
                 }
             }
-
-            _context.SaveChanges();
 
             Rooms = rooms;
         }

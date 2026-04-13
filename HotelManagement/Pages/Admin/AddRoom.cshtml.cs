@@ -110,7 +110,7 @@ namespace HotelManagement.Pages.Admin
 
             _context.SaveChanges();
 
-            // ? LOG ADD ROOM
+            // LOG ADD ROOM
             var adminId = HttpContext.Session.GetInt32("UserId");
             LogHelper.Log(_context, HttpContext, adminId, "ADD_ROOM", $"Added room: {Room.title}");
 

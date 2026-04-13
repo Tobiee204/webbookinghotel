@@ -52,6 +52,12 @@ namespace HotelManagement.Pages
             Room = _context.Rooms
                 .FirstOrDefault(r => r.room_id == id && r.is_active == true);
 
+            if (Room == null || !Room.is_active)
+            {
+                TempData["Error"] = "This room is no longer available.";
+                return RedirectToPage("/Hotels");
+            }
+
             CheckIn = DateTime.Today;
             CheckOut = DateTime.Today.AddDays(1);
 

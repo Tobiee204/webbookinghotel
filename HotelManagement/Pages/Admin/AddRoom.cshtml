@@ -89,9 +89,9 @@
             <div class="mb-3">
                 <label>Status</label>
                 <select asp-for="Room.status" class="form-control">
-                    <option>Available</option>
-                    <option>Booked</option>
-                    <option>Maintenance</option>
+                    <option value="Available">Available</option>
+                    <option value="Booked">Booked</option>
+                    <option value="Pending">Pending</option>
                 </select>
 				<span asp-validation-for="Room.status" class="text-danger"></span>
             </div>

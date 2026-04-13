@@ -24,6 +24,8 @@ namespace HotelManagement.Pages.Admin
         [BindProperty]
         public IFormFile? MainImage { get; set; }
 
+        public List<RoomImage> RoomImages { get; set; }
+
         // LOAD DATA KHI M? TRANG EDIT
         public IActionResult OnGet(int id)
         {
@@ -34,6 +36,11 @@ namespace HotelManagement.Pages.Admin
                 return RedirectToPage("/Admin/ManageRooms");
             }
 
+            // LOAD SUB IMAGES
+            RoomImages = _context.RoomImages
+                            .Where(x => x.room_id == id)
+                            .ToList();
+
             return Page();
         }
 
@@ -43,6 +50,10 @@ namespace HotelManagement.Pages.Admin
 
             if (!ModelState.IsValid)
             {
+                RoomImages = _context.RoomImages
+                .Where(x => x.room_id == Room.room_id)
+                .ToList();
+
                 TempData["ErrorMessage"] = "Please check your input!";
                 return Page();
             }
@@ -84,7 +95,7 @@ namespace HotelManagement.Pages.Admin
                 room.image = "/images/" + fileName;
             }
 
-            // ADD MORE IMAGES (FIX CHU?N)
+            // ADD MORE IMAGES
             if (Uploads != null && Uploads.Count > 0)
             {
                 foreach (var file in Uploads)
@@ -101,7 +112,7 @@ namespace HotelManagement.Pages.Admin
 
                         _context.RoomImages.Add(new RoomImage
                         {
-                            room_id = room.room_id, // ?? dùng room.room_id cho ch?c
+                            room_id = room.room_id,
                             image_url = "/images/" + fileName
                         });
                     }
@@ -122,6 +133,32 @@ namespace HotelManagement.Pages.Admin
 
             TempData["SuccessMessage"] = " Update room successfully!";
             return RedirectToPage("/Admin/ManageRooms");
+        }
+
+        public IActionResult OnPostDeleteImage(int id)
+        {
+            var image = _context.RoomImages.Find(id);
+
+            if (image != null)
+            {
+                // XÓA FILE TRONG WWWROOT
+                var filePath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    image.image_url.TrimStart('/')
+                );
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
+                // XÓA DB
+                _context.RoomImages.Remove(image);
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage(new { id = image?.room_id });
         }
     }
 }
