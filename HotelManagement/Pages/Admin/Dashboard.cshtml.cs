@@ -28,7 +28,7 @@ namespace HotelManagement.Pages.Admin
                     .Where(r => r.is_active == true)
                     .Count();
             TotalUsers = _context.Users.Count();
-            TotalBookings = _context.Bookings.Count();
+            TotalBookings = _context.Bookings.Count(b => b.status == "confirmed");
 
             TotalRevenue = _context.Bookings
                 .Where(b => b.status == "confirmed" && b.Payment != null)

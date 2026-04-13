@@ -22,7 +22,7 @@ namespace HotelManagement.Pages
         public void OnGet()
         {
             Offers = _context.Offers
-                .Where(o => o.is_active)
+                .Where(o => o.is_active && !o.is_delete)
                 .ToList();
 
             var userId = HttpContext.Session.GetInt32("UserId");
